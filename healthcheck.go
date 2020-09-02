@@ -241,7 +241,7 @@ func (h *Health) getGlobalStatus() Status {
 func (h *Health) Get() *Health {
 
 	for _, provider := range h.checkProviders {
-		mergo.Merge(&h.Checks, provider.Execute())
+		_ = mergo.Merge(&h.Checks, provider.Execute())
 	}
 
 	h.Status = h.getGlobalStatus()

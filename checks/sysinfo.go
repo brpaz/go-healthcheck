@@ -9,7 +9,6 @@ import (
 )
 
 const cpuUsageWarnThereshold = 85
-const freeRamWarnThereshold = 100
 
 type SysInfoChecker struct {
 }
