@@ -5,7 +5,6 @@
 
 ![Go version](https://img.shields.io/github/go-mod/go-version/brpaz/go-healthcheck?style=for-the-badge)
 [![Go Report Card](https://goreportcard.com/badge/github.com/brpaz/go-healthcheck?style=for-the-badge)](https://goreportcard.com/report/github.com/brpaz/go-healthcheck)
-
 [![CI Status](https://github.com/brpaz/go-healthcheck/workflows/CI/badge.svg?style=for-the-badge)](https://github.com/brpaz/go-healthcheck/actions)
 [![Coverage Status](https://img.shields.io/codecov/c/github/brpaz/go-healthcheck/master.svg?style=for-the-badge)](https://codecov.io/gh/brpaz/go-healthcheck)
 
@@ -38,11 +37,11 @@ import (
 )
 
 func main() {
-	health := healthcheck.New("myservice", "Some Test service", "1.0.0", "1.0.0-SNAPSHOT")
-	health.AddCheckProvider(checks.NewSysInfoChecker())
+    health := healthcheck.New("myservice", "Some Test service", "1.0.0", "1.0.0-SNAPSHOT")
+    health.AddCheckProvider(checks.NewSysInfoChecker())
 
     result := health.Get()
-    
+
     // TODO use the result in your HTTP handler to send the response to the health endpoint.
 } 
 ```

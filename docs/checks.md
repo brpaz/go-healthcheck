@@ -21,7 +21,7 @@ func main() {
     dbConn, _ := sql.Open("mysql", "dsn")
 
     // the first argument is the component name. It will be used as identifier for this check in the response
-	health.AddCheckProvider(checks.NewDBChecker("main-db", dbConn))
+    health.AddCheckProvider(checks.NewDBChecker("main-db", dbConn))
 
     result := health.Get()
 } 
@@ -44,7 +44,7 @@ func main() {
     health := healthcheck.New("myservice", "Some Test service", "1.0.0", "1.0.0-SPANSHOT")
     
     // the first argument is the component name. It will be used as identifier for this check in the response
-	health.AddCheckProvider(checks.NewTCPChecker("my-service", "google.com:80"))
+    health.AddCheckProvider(checks.NewTCPChecker("my-service", "google.com:80"))
 
     result := health.Get()
 } 
@@ -66,7 +66,7 @@ func main() {
     health := healthcheck.New("myservice", "Some Test service", "1.0.0", "1.0.0-SPANSHOT")
     
     // the first argument is the component name. It will be used as identifier for this check in the response
-	health.AddCheckProvider(checks.NewURLChecker("serviceA", "http://example.com", 5*time.Second))
+    health.AddCheckProvider(checks.NewURLChecker("serviceA", "http://example.com", 5*time.Second))
 
     result := health.Get()
 } 
@@ -88,7 +88,7 @@ func main() {
     health := healthcheck.New("myservice", "Some Test service", "1.0.0", "1.0.0-SPANSHOT")
     
     // the first argument is the component name. It will be used as identifier for this check in the response
-	health.AddCheckProvider(checks.NewSysInfoChecker()))
+    health.AddCheckProvider(checks.NewSysInfoChecker()))
 
     result := health.Get()
 } 
