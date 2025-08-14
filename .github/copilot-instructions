@@ -1,0 +1,17 @@
+# copilot-instructions
+
+This project is a Golang library that provides a way to implement an Healthcheck endpoint in a web application.
+
+It follows closely the [RFC Healthcheck](https://inadarei.github.io/rfc-healthcheck/) for format of the health check response.
+
+# Development instructions
+
+- Use idiomatic Go code and follow best practices.
+- Prefer standard library packages when possible.
+- Write unit tests for all new functions and checks.
+- When writing unit tests, use subtests with `t.parallel()`. Prefer `t.Run()` instead of table driven tests, unless you are testing simple combinations of values.
+- Use context for HTTP requests and health checks.
+- Document public functions and exported types.
+- Use clear, descriptive variable and function names.
+- Keep code modular and maintainable.
+- Follow project naming conventions.

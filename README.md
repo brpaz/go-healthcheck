@@ -1,64 +1,81 @@
 
 # go-healthcheck
 
-> Golang library that helps creating Healthchecks endpoints that follow the [IETF RFC Health Check](https://tools.ietf.org/id/draft-inadarei-api-health-check-02.html) Response Format for HTTP APIs specification.
+> Golang library that helps creating Healthchecks endpoints that follow the [IETF RFC Health Check](https://tools.ietf.org/id/draft-inadarei-api-health-check-02.html) format.
 
 ![Go version](https://img.shields.io/github/go-mod/go-version/brpaz/go-healthcheck?style=for-the-badge)
 [![Go Report Card](https://goreportcard.com/badge/github.com/brpaz/go-healthcheck?style=for-the-badge)](https://goreportcard.com/report/github.com/brpaz/go-healthcheck)
 [![CI Status](https://github.com/brpaz/go-healthcheck/workflows/CI/badge.svg?style=for-the-badge)](https://github.com/brpaz/go-healthcheck/actions)
 [![Coverage Status](https://img.shields.io/codecov/c/github/brpaz/go-healthcheck/master.svg?style=for-the-badge)](https://codecov.io/gh/brpaz/go-healthcheck)
 
-
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=for-the-badge)](http://commitizen.github.io/cz-cli/)
 
 ## Features
 
-This library helps creating Healthchecks endpoints that follows the [IETF RFC Health Check](https://tools.ietf.org/id/draft-inadarei-api-health-check-02.html) Response Format for HTTP APIs specification.
+This library helps creating Healthchecks endpoints that follows the [IETF RFC Health Check](https://tools.ietf.org/id/draft-inadarei-api-health-check-02.html) format for HTTP APIs specification.
 
-It´s heavily inspired by [health-go](https://github.com/nelkinda/health-go) but the checks are setup in a different way. It also doesnt include any HTTP handler by default. It´s up to you to use the healthcheck library to build the formatted healthcheck response and then adapt to your handler of choice.
+It´s heavily inspired by [health-go](https://github.com/nelkinda/health-go) but the checks are setup in a different way.
 
-It includes the following Healthchecks by default:
+The following healthchecks are included by default (PRs welcome):
 
-* Sysinfo (Uptime, Memory Usage, Load Average, etc)
-* Database
-* Url
-* TCP
+- **HTTP Check** - A check that checks if an http endpoint is reachable and returns a successful status code.
+- **TCP Check** - A check that checks if a TCP endpoint is reachable.
+- **SysInfo Check** - A check that returns system information, such as CPU and memory usage.
+- **Disk Check** - A check that returns disk usage information.
+- **DB Check** - A check that checks if can connect to database.
+- **Redis Check** - A check that checks if can connect to a Redis instance.
+- **Mock Check** - A simple check that returns success or fail, based on the provided argument. Useful for tests.
 
-## Usage
+## Getting started
+
+### Installation
+
+```shell
+go get github.com/brpaz/go-healthcheck
+```
+
+### Usage
 
 ```go
 package main
 
-import (
-    "github.com/brpaz/go-healthcheck"
-    "github.com/brpaz/go-healthcheck/checks"
-)
+import "net/http"
+import "github.com/brpaz/go-healthcheck"
+import "github.com/brpaz/go-healthcheck/pkg/checks/mockcheck"
 
 func main() {
-    health := healthcheck.New("myservice", "Some Test service", "1.0.0", "1.0.0-SNAPSHOT")
-    health.AddCheckProvider(checks.NewSysInfoChecker())
 
-    result := health.Get()
+    // 1. Declare your checks
+    mycheck := mockcheck.New(
+        mockcheck.WithName("my-check"),
+    )
 
-    // TODO use the result in your HTTP handler to send the response to the health endpoint.
-}
+    // Initialize the healthcheck service
+    hc := healthcheck.New(
+        healthcheck.WithServiceID("my-service"),
+        healthcheck.WithDescription("My Service"),
+        healthcheck.WithVersion("1.0.0"),
+        healthcheck.WithReleaseID("1.0.0-SNAPSHOT"),
+        healthcheck.WithCheck(mycheck),
+    )
+
+    // Serve the healthcheck endpoint using the provided handler
+    http.HandleFunc("/health", healthcheck.Handler(hc))
+    http.ListenAndServe(":8080", nil)
 ```
 
-For instructions how to use the specific checks provided in this package, please see [this](docs/checks.md).
+> [!TIP]
+> For instructions how to use the specific checks provided in this package, please see [this](docs/checks.md).
 
+## Adding your own checks
 
-## Creating new checks.
+If you want to build your own custom checks, it´s very simple.
 
-It´s very simple to create a new check. Just create a struct that implements the `Check provider` interface and register it in the healthcheck struct.
+1. Create a new struct that implements the `Check` interface.
+2. Register your new check with the healthcheck service.
+
 You can see examples in the [checks](checks) directory of this project.
-
-## Run tests
-
-```sh
-make tests
-```
-
 
 ## 🤝 Contributing
 
