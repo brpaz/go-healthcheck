@@ -1,0 +1,24 @@
+version: "2"
+run:
+  allow-parallel-runners: true
+  allow-serial-runners: true
+  timeout: 5m
+linters:
+  default: standard
+
+formatters:
+  enable:
+    - gci
+    - gofumpt
+  settings:
+    gci:
+      sections:
+        - standard
+        - default
+        - prefix(github.com/brpaz/go-healthcheck)
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$

@@ -11,7 +11,6 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=for-the-badge)](http://commitizen.github.io/cz-cli/)
-[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg?style=for-the-badge)](https://github.com/semantic-release/semantic-release?style=for-the-badge)
 
 ## Features
 
@@ -43,7 +42,7 @@ func main() {
     result := health.Get()
 
     // TODO use the result in your HTTP handler to send the response to the health endpoint.
-} 
+}
 ```
 
 For instructions how to use the specific checks provided in this package, please see [this](docs/checks.md).

@@ -1,0 +1,21 @@
+# https://taskfile.dev
+
+version: "3"
+
+tasks:
+  default:
+    cmds:
+      - task -l
+    silent: true
+
+  lint:
+    desc: Runs GolangCI-Lint
+    cmds:
+      - golangci-lint run ./...
+    silent: true
+
+  test:
+    desc: Runs tests with coverage
+    cmds:
+      - gotestsum --format=testname -- ./... -coverprofile=coverage.out
+    silent: true
