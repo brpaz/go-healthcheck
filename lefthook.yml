@@ -1,0 +1,9 @@
+pre-commit:
+  commands:
+    lint:
+      glob: "*.go"
+      run: task lint
+
+    test:
+      glob: "*.go"
+      run: task test

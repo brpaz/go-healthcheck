@@ -19,5 +19,6 @@
 
   enterShell = ''
     go version
+    lefthook install
   '';
 }
