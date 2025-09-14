@@ -28,7 +28,7 @@ func TestDiskCheck_New(t *testing.T) {
 	t.Run("creates check with default values", func(t *testing.T) {
 		t.Parallel()
 
-		check := diskcheck.New()
+		check := diskcheck.NewCheck()
 
 		assert.NotNil(t, check)
 		assert.Equal(t, "disk-check", check.GetName())
@@ -39,7 +39,7 @@ func TestDiskCheck_New(t *testing.T) {
 
 		mockStater := &MockFileSystemStater{}
 
-		check := diskcheck.New(
+		check := diskcheck.NewCheck(
 			diskcheck.WithName("custom-disk-check"),
 			diskcheck.WithPath("/var"),
 			diskcheck.WithWarnThreshold(70.0),
@@ -54,7 +54,7 @@ func TestDiskCheck_New(t *testing.T) {
 	t.Run("creates check with single path", func(t *testing.T) {
 		t.Parallel()
 
-		check := diskcheck.New(
+		check := diskcheck.NewCheck(
 			diskcheck.WithPath("/"),
 		)
 
@@ -66,7 +66,7 @@ func TestDiskCheck_New(t *testing.T) {
 func TestDiskCheck_GetName(t *testing.T) {
 	t.Parallel()
 
-	check := diskcheck.New()
+	check := diskcheck.NewCheck()
 	assert.Equal(t, "disk-check", check.GetName())
 }
 
@@ -90,7 +90,7 @@ func TestDiskCheck_Run(t *testing.T) {
 
 		mockStater.On("Statfs", "/").Return(diskInfo, nil)
 
-		check := diskcheck.New(diskcheck.WithFileSystemStater(mockStater))
+		check := diskcheck.NewCheck(diskcheck.WithFileSystemStater(mockStater))
 		result := check.Run(context.Background())
 
 		assert.Equal(t, checks.StatusPass, result.Status)
@@ -117,7 +117,7 @@ func TestDiskCheck_Run(t *testing.T) {
 
 		mockStater.On("Statfs", "/").Return(diskInfo, nil)
 
-		check := diskcheck.New(diskcheck.WithFileSystemStater(mockStater))
+		check := diskcheck.NewCheck(diskcheck.WithFileSystemStater(mockStater))
 		result := check.Run(context.Background())
 
 		assert.Equal(t, checks.StatusWarn, result.Status)
@@ -144,7 +144,7 @@ func TestDiskCheck_Run(t *testing.T) {
 
 		mockStater.On("Statfs", "/").Return(diskInfo, nil)
 
-		check := diskcheck.New(diskcheck.WithFileSystemStater(mockStater))
+		check := diskcheck.NewCheck(diskcheck.WithFileSystemStater(mockStater))
 		result := check.Run(context.Background())
 
 		assert.Equal(t, checks.StatusFail, result.Status)
@@ -162,7 +162,7 @@ func TestDiskCheck_Run(t *testing.T) {
 
 		mockStater.On("Statfs", "/").Return((*diskcheck.DiskInfo)(nil), statError)
 
-		check := diskcheck.New(diskcheck.WithFileSystemStater(mockStater))
+		check := diskcheck.NewCheck(diskcheck.WithFileSystemStater(mockStater))
 		result := check.Run(context.Background())
 
 		assert.Equal(t, checks.StatusFail, result.Status)
@@ -189,7 +189,7 @@ func TestDiskCheck_Run(t *testing.T) {
 
 		mockStater.On("Statfs", "/").Return(rootInfo, nil)
 
-		check := diskcheck.New(
+		check := diskcheck.NewCheck(
 			diskcheck.WithPath("/"),
 			diskcheck.WithFileSystemStater(mockStater),
 		)
@@ -223,7 +223,7 @@ func TestDiskCheck_CustomThresholds(t *testing.T) {
 
 		mockStater.On("Statfs", "/").Return(diskInfo, nil)
 
-		check := diskcheck.New(
+		check := diskcheck.NewCheck(
 			diskcheck.WithWarnThreshold(70.0), // Warn at 70%
 			diskcheck.WithFailThreshold(85.0), // Fail at 85%
 			diskcheck.WithFileSystemStater(mockStater),
@@ -257,7 +257,7 @@ func TestDiskCheck_GetDiskInfo(t *testing.T) {
 
 		mockStater.On("Statfs", "/").Return(rootInfo, nil)
 
-		check := diskcheck.New(
+		check := diskcheck.NewCheck(
 			diskcheck.WithPath("/"),
 			diskcheck.WithFileSystemStater(mockStater),
 		)
@@ -279,7 +279,7 @@ func TestDiskCheck_GetDiskInfo(t *testing.T) {
 
 		mockStater.On("Statfs", "/").Return((*diskcheck.DiskInfo)(nil), statError)
 
-		check := diskcheck.New(diskcheck.WithFileSystemStater(mockStater))
+		check := diskcheck.NewCheck(diskcheck.WithFileSystemStater(mockStater))
 
 		infos, err := check.GetDiskInfo()
 
@@ -354,7 +354,7 @@ func TestDiskCheck_Run_ThresholdScenarios(t *testing.T) {
 
 			mockStater.On("Statfs", "/").Return(diskInfo, nil)
 
-			check := diskcheck.New(
+			check := diskcheck.NewCheck(
 				diskcheck.WithWarnThreshold(tt.warnThreshold),
 				diskcheck.WithFailThreshold(tt.failThreshold),
 				diskcheck.WithFileSystemStater(mockStater),

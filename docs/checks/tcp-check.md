@@ -24,7 +24,7 @@ import (
 )
 
 func main() {
-    check := tcpcheck.New(
+    check := tcpcheck.NewCheck(
         tcpcheck.WithName("tcp:my-service"),
         tcpcheck.WithHost("localhost"),
         tcpcheck.WithPort(8080),

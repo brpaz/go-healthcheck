@@ -10,9 +10,8 @@ Package memorycheck provides system memory monitoring health checks for Linux sy
 
 ## Index
 
-- [Constants](<#constants>)
 - [type Check](<#Check>)
-  - [func New\(opts ...Option\) \*Check](<#New>)
+  - [func NewCheck\(opts ...Option\) \*Check](<#NewCheck>)
   - [func \(c \*Check\) GetMemoryInfo\(\) \(\*MemoryStats, error\)](<#Check.GetMemoryInfo>)
   - [func \(c \*Check\) GetName\(\) string](<#Check.GetName>)
   - [func \(c \*Check\) Run\(ctx context.Context\) checks.Result](<#Check.Run>)
@@ -27,18 +26,8 @@ Package memorycheck provides system memory monitoring health checks for Linux sy
   - [func WithWarnThreshold\(threshold float64\) Option](<#WithWarnThreshold>)
 
 
-## Constants
-
-<a name="Name"></a>
-
-```go
-const (
-    Name = "memory-check"
-)
-```
-
 <a name="Check"></a>
-## type [Check](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/check.go#L25-L30>)
+## type [Check](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/check.go#L21-L26>)
 
 Check represents a memory health check that monitors system memory usage.
 
@@ -48,17 +37,17 @@ type Check struct {
 }
 ```
 
-<a name="New"></a>
-### func [New](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/check.go#L64>)
+<a name="NewCheck"></a>
+### func [NewCheck](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/check.go#L60>)
 
 ```go
-func New(opts ...Option) *Check
+func NewCheck(opts ...Option) *Check
 ```
 
-New creates a new Memory Check instance with optional configuration.
+NewCheck creates a new Memory Check instance with optional configuration.
 
 <a name="Check.GetMemoryInfo"></a>
-### func \(\*Check\) [GetMemoryInfo](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/check.go#L120>)
+### func \(\*Check\) [GetMemoryInfo](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/check.go#L115>)
 
 ```go
 func (c *Check) GetMemoryInfo() (*MemoryStats, error)
@@ -67,7 +56,7 @@ func (c *Check) GetMemoryInfo() (*MemoryStats, error)
 GetMemoryInfo returns current memory statistics
 
 <a name="Check.GetName"></a>
-### func \(\*Check\) [GetName](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/check.go#L80>)
+### func \(\*Check\) [GetName](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/check.go#L76>)
 
 ```go
 func (c *Check) GetName() string
@@ -76,7 +65,7 @@ func (c *Check) GetName() string
 GetName returns the name of the check.
 
 <a name="Check.Run"></a>
-### func \(\*Check\) [Run](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/check.go#L85>)
+### func \(\*Check\) [Run](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/check.go#L81>)
 
 ```go
 func (c *Check) Run(ctx context.Context) checks.Result
@@ -85,7 +74,7 @@ func (c *Check) Run(ctx context.Context) checks.Result
 Run executes the memory health check and returns the result.
 
 <a name="DefaultMemoryReader"></a>
-## type [DefaultMemoryReader](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/reader.go#L17>)
+## type [DefaultMemoryReader](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/memory_reader.go#L17>)
 
 DefaultMemoryReader reads memory stats from /proc/meminfo
 
@@ -94,7 +83,7 @@ type DefaultMemoryReader struct{}
 ```
 
 <a name="DefaultMemoryReader.ReadMemoryStats"></a>
-### func \(\*DefaultMemoryReader\) [ReadMemoryStats](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/reader.go#L20>)
+### func \(\*DefaultMemoryReader\) [ReadMemoryStats](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/memory_reader.go#L20>)
 
 ```go
 func (r *DefaultMemoryReader) ReadMemoryStats() (*MemoryStats, error)
@@ -103,7 +92,7 @@ func (r *DefaultMemoryReader) ReadMemoryStats() (*MemoryStats, error)
 ReadMemoryStats reads memory statistics from /proc/meminfo
 
 <a name="MemoryReader"></a>
-## type [MemoryReader](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/reader.go#L12-L14>)
+## type [MemoryReader](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/memory_reader.go#L12-L14>)
 
 MemoryReader interface for reading memory stats \(useful for testing\)
 
@@ -114,7 +103,7 @@ type MemoryReader interface {
 ```
 
 <a name="MemoryStats"></a>
-## type [MemoryStats](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/check.go#L17-L22>)
+## type [MemoryStats](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/check.go#L13-L18>)
 
 MemoryStats represents memory statistics
 
@@ -128,7 +117,7 @@ type MemoryStats struct {
 ```
 
 <a name="Option"></a>
-## type [Option](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/check.go#L33>)
+## type [Option](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/check.go#L29>)
 
 Option is a functional option for configuring Check.
 
@@ -137,7 +126,7 @@ type Option func(*Check)
 ```
 
 <a name="WithFailThreshold"></a>
-### func [WithFailThreshold](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/check.go#L50>)
+### func [WithFailThreshold](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/check.go#L46>)
 
 ```go
 func WithFailThreshold(threshold float64) Option
@@ -146,7 +135,7 @@ func WithFailThreshold(threshold float64) Option
 WithFailThreshold sets the memory usage percentage threshold to trigger a failure status.
 
 <a name="WithMemoryReader"></a>
-### func [WithMemoryReader](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/check.go#L57>)
+### func [WithMemoryReader](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/check.go#L53>)
 
 ```go
 func WithMemoryReader(reader MemoryReader) Option
@@ -155,7 +144,7 @@ func WithMemoryReader(reader MemoryReader) Option
 WithMemoryReader sets a custom memory reader \(useful for testing\).
 
 <a name="WithName"></a>
-### func [WithName](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/check.go#L36>)
+### func [WithName](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/check.go#L32>)
 
 ```go
 func WithName(name string) Option
@@ -164,7 +153,7 @@ func WithName(name string) Option
 WithName sets the name of the check.
 
 <a name="WithWarnThreshold"></a>
-### func [WithWarnThreshold](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/check.go#L43>)
+### func [WithWarnThreshold](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/check.go#L39>)
 
 ```go
 func WithWarnThreshold(threshold float64) Option

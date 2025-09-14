@@ -14,7 +14,7 @@ import "net/http" import "github.com/brpaz/go\-healthcheck/v2" import "github.co
 
 ```
 func main() {
-    mycheck := mockcheck.New(
+    mycheck := mockcheck.NewCheck(
 		mockcheck.WithName("my-check"),
 	)
 	hc := healthcheck.New(

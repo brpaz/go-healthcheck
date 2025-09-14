@@ -14,13 +14,13 @@ func TestMockCheck_New(t *testing.T) {
 	t.Parallel()
 	t.Run("With default options", func(t *testing.T) {
 		t.Parallel()
-		check := mockcheck.New()
+		check := mockcheck.NewCheck()
 		assert.Equal(t, "mock", check.GetName())
 	})
 
 	t.Run("With custom options", func(t *testing.T) {
 		t.Parallel()
-		check := mockcheck.New(
+		check := mockcheck.NewCheck(
 			mockcheck.WithName("custom"),
 			mockcheck.WithStatus(checks.StatusFail),
 		)
@@ -32,7 +32,7 @@ func TestMockCheck_Execute(t *testing.T) {
 	t.Parallel()
 	t.Run("pass", func(t *testing.T) {
 		t.Parallel()
-		check := mockcheck.New(
+		check := mockcheck.NewCheck(
 			mockcheck.WithName("test"),
 			mockcheck.WithStatus(checks.StatusPass),
 		)
@@ -43,13 +43,13 @@ func TestMockCheck_Execute(t *testing.T) {
 
 	t.Run("fail", func(t *testing.T) {
 		t.Parallel()
-		check := mockcheck.New(
+		check := mockcheck.NewCheck(
 			mockcheck.WithName("fail"),
 			mockcheck.WithStatus(checks.StatusFail),
 		)
 		result := check.Run(context.Background())
 		assert.Equal(t, checks.StatusFail, result.Status)
-		assert.Equal(t, "mock check failed", result.Output)
+		assert.Equal(t, "check failed", result.Output)
 		assert.Equal(t, "fail", check.GetName())
 	})
 }

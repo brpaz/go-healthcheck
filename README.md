@@ -45,7 +45,7 @@ import (
 
 func main() {
   // Create your healthchecks.
-  check1 := mockcheck.New(
+  check1 := mockcheck.NewCheck(
       mockcheck.WithName("my-check"),
       mockcheck.WithStatus(checks.StatusPass),
   )

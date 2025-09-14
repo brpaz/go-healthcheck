@@ -23,7 +23,7 @@ func main() {
         Password: "", // no password set
         DB:       0,  // use default DB
     })
-	check := redischeck.New(
+	check := redischeck.NewCheck(
         redischeck.WithName("My Redis Check"),
         redischeck.WithClient(redisClient),
 		redischeck.WithTimeout(5*time.Second),

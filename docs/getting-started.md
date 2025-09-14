@@ -28,7 +28,7 @@ func main() {
         healthcheck.WithVersion("1.0.0"),
         healthcheck.WithReleaseID("sha256:abcdef1234567890"),
         healthcheck.WithChecks(
-            httpcheck.New(
+            httpcheck.NewCheck(
                 httpcheck.WithName("http:google"),
                 httpcheck.WithURL("https://www.google.com"),
                 httpcheck.WithExpectedStatus(200)

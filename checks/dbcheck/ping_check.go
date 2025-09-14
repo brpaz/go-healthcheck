@@ -1,5 +1,4 @@
-// Package pingcheck provides database ping health check implementation.
-package pingcheck
+package dbcheck
 
 import (
 	"context"
@@ -8,50 +7,49 @@ import (
 	"github.com/brpaz/go-healthcheck/v2/checks"
 )
 
-const (
-	defaultTimeout = 5 * time.Second
-)
-
-// DatabasePinger interface for database instances that support pinging.
 type DatabasePinger interface {
 	PingContext(ctx context.Context) error
 }
 
-// PingCheck represents a SQL database Ping health check that verifies Ping through ping operations.
+const (
+	defaultTimeout = 5 * time.Second
+)
+
+// PingCheck represents a SQL database ping health check that verifies connectivity through ping operations.
 type PingCheck struct {
 	name    string
 	db      DatabasePinger
 	timeout time.Duration
 }
 
-// Option is a functional option for configuring PingCheck.
-type Option func(*PingCheck)
+// PingOption is a functional option for configuring PingCheck.
+type PingOption func(*PingCheck)
 
-// WithPingName sets the name of the Ping check.
-func WithPingName(name string) Option {
+// WithPingName sets the name of the ping check.
+func WithPingName(name string) PingOption {
 	return func(c *PingCheck) {
 		c.name = name
 	}
 }
 
-// WithPingDB sets the database connection to use for the health check.
-func WithPingDB(db DatabasePinger) Option {
+// WithPingDB sets the database connection to use for the ping health check.
+func WithPingDB(db DatabasePinger) PingOption {
 	return func(c *PingCheck) {
 		c.db = db
 	}
 }
 
 // WithPingTimeout sets the timeout for the database ping operation.
-func WithPingTimeout(timeout time.Duration) Option {
+func WithPingTimeout(timeout time.Duration) PingOption {
 	return func(c *PingCheck) {
 		c.timeout = timeout
 	}
 }
 
-// New creates a new SQL Ping Check instance with optional configuration.
-func New(opts ...Option) *PingCheck {
+// NewPing creates a new SQL Ping Check instance with optional configuration.
+func NewPing(opts ...PingOption) *PingCheck {
 	check := &PingCheck{
-		name:    "sql-check",
+		name:    "database:ping",
 		db:      nil,
 		timeout: defaultTimeout,
 	}
@@ -63,7 +61,7 @@ func New(opts ...Option) *PingCheck {
 	return check
 }
 
-// GetName returns the name of the check.
+// GetName returns the name of the ping check.
 func (c *PingCheck) GetName() string {
 	return c.name
 }
@@ -99,7 +97,6 @@ func (c *PingCheck) Run(ctx context.Context) checks.Result {
 
 	return checks.Result{
 		Status:        checks.StatusPass,
-		Output:        "",
 		Time:          now,
 		ObservedUnit:  "ms",
 		ObservedValue: duration.Milliseconds(),

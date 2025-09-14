@@ -34,7 +34,7 @@ func TestRedisCheck_New(t *testing.T) {
 	t.Run("creates check with default values", func(t *testing.T) {
 		t.Parallel()
 
-		check := redischeck.New()
+		check := redischeck.NewCheck()
 
 		assert.NotNil(t, check)
 		assert.Equal(t, "redis", check.GetName())
@@ -46,7 +46,7 @@ func TestRedisCheck_New(t *testing.T) {
 		mockClient := &MockRedisClient{}
 		customTimeout := 10 * time.Second
 
-		check := redischeck.New(
+		check := redischeck.NewCheck(
 			redischeck.WithName("custom-redis-check"),
 			redischeck.WithClient(mockClient),
 			redischeck.WithTimeout(customTimeout),
@@ -60,7 +60,7 @@ func TestRedisCheck_New(t *testing.T) {
 func TestRedisCheck_GetName(t *testing.T) {
 	t.Parallel()
 
-	check := redischeck.New()
+	check := redischeck.NewCheck()
 	assert.Equal(t, "redis", check.GetName())
 }
 
@@ -70,7 +70,7 @@ func TestRedisCheck_Run(t *testing.T) {
 	t.Run("fails when client is nil", func(t *testing.T) {
 		t.Parallel()
 
-		check := redischeck.New()
+		check := redischeck.NewCheck()
 		result := check.Run(context.Background())
 
 		assert.Equal(t, checks.StatusFail, result.Status)
@@ -83,7 +83,7 @@ func TestRedisCheck_Run(t *testing.T) {
 		mockClient := &MockRedisClient{}
 		mockClient.On("Ping", mock.Anything).Return(nil)
 
-		check := redischeck.New(redischeck.WithClient(mockClient))
+		check := redischeck.NewCheck(redischeck.WithClient(mockClient))
 		result := check.Run(context.Background())
 
 		assert.Equal(t, checks.StatusPass, result.Status)
@@ -100,7 +100,7 @@ func TestRedisCheck_Run(t *testing.T) {
 		pingError := errors.New("connection refused")
 		mockClient.On("Ping", mock.Anything).Return(pingError)
 
-		check := redischeck.New(redischeck.WithClient(mockClient))
+		check := redischeck.NewCheck(redischeck.WithClient(mockClient))
 		result := check.Run(context.Background())
 
 		assert.Equal(t, checks.StatusFail, result.Status)
@@ -117,7 +117,7 @@ func TestRedisCheck_Run(t *testing.T) {
 		timeoutError := errors.New("context deadline exceeded")
 		mockClient.On("Ping", mock.Anything).Return(timeoutError)
 
-		check := redischeck.New(
+		check := redischeck.NewCheck(
 			redischeck.WithClient(mockClient),
 			redischeck.WithTimeout(1*time.Millisecond),
 		)
@@ -139,7 +139,7 @@ func TestRedisCheck_Run(t *testing.T) {
 		mockClient := &MockRedisClient{}
 		mockClient.On("Ping", mock.Anything).Return(context.Canceled)
 
-		check := redischeck.New(redischeck.WithClient(mockClient))
+		check := redischeck.NewCheck(redischeck.WithClient(mockClient))
 		result := check.Run(ctx)
 
 		assert.Equal(t, checks.StatusFail, result.Status)

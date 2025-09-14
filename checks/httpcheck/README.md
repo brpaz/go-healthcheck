@@ -11,7 +11,7 @@ Package httpcheck provides HTTP url health checks. It requests HTTP urls and ver
 ## Index
 
 - [type Check](<#Check>)
-  - [func New\(opts ...Option\) \*Check](<#New>)
+  - [func NewCheck\(opts ...Option\) \*Check](<#NewCheck>)
   - [func \(c \*Check\) GetName\(\) string](<#Check.GetName>)
   - [func \(c \*Check\) Run\(ctx context.Context\) checks.Result](<#Check.Run>)
 - [type Option](<#Option>)
@@ -33,14 +33,14 @@ type Check struct {
 }
 ```
 
-<a name="New"></a>
-### func [New](<https://github.com/brpaz/go-healthcheck/blob/master/checks/httpcheck/check.go#L65>)
+<a name="NewCheck"></a>
+### func [NewCheck](<https://github.com/brpaz/go-healthcheck/blob/master/checks/httpcheck/check.go#L65>)
 
 ```go
-func New(opts ...Option) *Check
+func NewCheck(opts ...Option) *Check
 ```
 
-New creates a new HTTP Check instance with optional configuration.
+NewCheck creates a new HTTP Check instance with optional configuration.
 
 <a name="Check.GetName"></a>
 ### func \(\*Check\) [GetName](<https://github.com/brpaz/go-healthcheck/blob/master/checks/httpcheck/check.go#L82>)

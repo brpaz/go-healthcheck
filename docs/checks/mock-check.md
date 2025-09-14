@@ -21,7 +21,7 @@ import (
 )
 
 func main() {
-    check := mockcheck.New(
+    check := mockcheck.NewCheck(
         mockcheck.WithName("mock:example"),
         mockcheck.WithStatus("pass"),
     )

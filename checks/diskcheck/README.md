@@ -12,7 +12,7 @@ Package diskcheck provides disk space monitoring health checks. It monitors disk
 
 - [Constants](<#constants>)
 - [type Check](<#Check>)
-  - [func New\(opts ...Option\) \*Check](<#New>)
+  - [func NewCheck\(opts ...Option\) \*Check](<#NewCheck>)
   - [func \(c \*Check\) GetDiskInfo\(\) \(\[\]\*DiskInfo, error\)](<#Check.GetDiskInfo>)
   - [func \(c \*Check\) GetName\(\) string](<#Check.GetName>)
   - [func \(c \*Check\) Run\(ctx context.Context\) checks.Result](<#Check.Run>)
@@ -49,14 +49,14 @@ type Check struct {
 }
 ```
 
-<a name="New"></a>
-### func [New](<https://github.com/brpaz/go-healthcheck/blob/master/checks/diskcheck/check.go#L75>)
+<a name="NewCheck"></a>
+### func [NewCheck](<https://github.com/brpaz/go-healthcheck/blob/master/checks/diskcheck/check.go#L75>)
 
 ```go
-func New(opts ...Option) *Check
+func NewCheck(opts ...Option) *Check
 ```
 
-New creates a new Disk Check instance with optional configuration.
+NewCheck creates a new Disk Check instance with optional configuration.
 
 <a name="Check.GetDiskInfo"></a>
 ### func \(\*Check\) [GetDiskInfo](<https://github.com/brpaz/go-healthcheck/blob/master/checks/diskcheck/check.go#L130>)
@@ -86,7 +86,7 @@ func (c *Check) Run(ctx context.Context) checks.Result
 Run executes the disk space health check and returns results for each monitored path. Note: This implementation temporarily returns only the first path check for RFC compliance. TODO: Split into separate checks per path.
 
 <a name="DefaultFileSystemStater"></a>
-## type [DefaultFileSystemStater](<https://github.com/brpaz/go-healthcheck/blob/master/checks/diskcheck/reader.go#L14>)
+## type [DefaultFileSystemStater](<https://github.com/brpaz/go-healthcheck/blob/master/checks/diskcheck/disk_reader.go#L14>)
 
 DefaultFileSystemStater implements FileSystemStater using syscall.Statfs
 
@@ -95,7 +95,7 @@ type DefaultFileSystemStater struct{}
 ```
 
 <a name="DefaultFileSystemStater.Statfs"></a>
-### func \(\*DefaultFileSystemStater\) [Statfs](<https://github.com/brpaz/go-healthcheck/blob/master/checks/diskcheck/reader.go#L16>)
+### func \(\*DefaultFileSystemStater\) [Statfs](<https://github.com/brpaz/go-healthcheck/blob/master/checks/diskcheck/disk_reader.go#L16>)
 
 ```go
 func (d *DefaultFileSystemStater) Statfs(path string) (*DiskInfo, error)
@@ -120,7 +120,7 @@ type DiskInfo struct {
 ```
 
 <a name="FileSystemStater"></a>
-## type [FileSystemStater](<https://github.com/brpaz/go-healthcheck/blob/master/checks/diskcheck/reader.go#L9-L11>)
+## type [FileSystemStater](<https://github.com/brpaz/go-healthcheck/blob/master/checks/diskcheck/disk_reader.go#L9-L11>)
 
 FileSystemStater defines the interface for getting filesystem statistics
 

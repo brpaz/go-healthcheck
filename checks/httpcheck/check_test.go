@@ -35,7 +35,7 @@ func TestHTTPCheck_Run(t *testing.T) {
 		}))
 		defer server.Close()
 
-		check := httpcheck.New(
+		check := httpcheck.NewCheck(
 			httpcheck.WithName("test-check"),
 			httpcheck.WithURL(server.URL),
 			httpcheck.WithTimeout(1*time.Second),
@@ -56,7 +56,7 @@ func TestHTTPCheck_Run(t *testing.T) {
 		}))
 		defer server.Close()
 
-		check := httpcheck.New(
+		check := httpcheck.NewCheck(
 			httpcheck.WithName("test-check"),
 			httpcheck.WithURL(server.URL),
 		)
@@ -70,7 +70,7 @@ func TestHTTPCheck_Run(t *testing.T) {
 	t.Run("failed check with empty endpoint", func(t *testing.T) {
 		t.Parallel()
 
-		check := httpcheck.New(
+		check := httpcheck.NewCheck(
 			httpcheck.WithName("test-check"),
 		)
 
@@ -88,7 +88,7 @@ func TestHTTPCheck_Run(t *testing.T) {
 		}))
 		defer server.Close()
 
-		check := httpcheck.New(
+		check := httpcheck.NewCheck(
 			httpcheck.WithName("test-check"),
 			httpcheck.WithURL(server.URL),
 			httpcheck.WithExpectedStatus(201, 202),
@@ -108,7 +108,7 @@ func TestHTTPCheck_Run(t *testing.T) {
 		}))
 		defer server.Close()
 
-		check := httpcheck.New(
+		check := httpcheck.NewCheck(
 			httpcheck.WithName("timeout-test"),
 			httpcheck.WithURL(server.URL),
 			httpcheck.WithTimeout(50*time.Millisecond), // Short timeout
@@ -145,7 +145,7 @@ func TestHTTPCheck_Run(t *testing.T) {
 			Timeout:   5 * time.Second,
 		}
 
-		check := httpcheck.New(
+		check := httpcheck.NewCheck(
 			httpcheck.WithName("custom-client-test"),
 			httpcheck.WithURL(server.URL),
 			httpcheck.WithHTTPClient(customClient),
@@ -171,7 +171,7 @@ func TestHTTPCheck_Run(t *testing.T) {
 			Timeout: 50 * time.Millisecond,
 		}
 
-		check := httpcheck.New(
+		check := httpcheck.NewCheck(
 			httpcheck.WithName("client-timeout-test"),
 			httpcheck.WithURL(server.URL),
 			httpcheck.WithHTTPClient(customClient),
@@ -189,7 +189,7 @@ func TestHTTPCheck_GetName(t *testing.T) {
 	t.Parallel()
 
 	t.Run("returns custom name when set", func(t *testing.T) {
-		check := httpcheck.New(
+		check := httpcheck.NewCheck(
 			httpcheck.WithName("my-custom-check"),
 			httpcheck.WithURL("http://example.com"),
 		)
@@ -198,7 +198,7 @@ func TestHTTPCheck_GetName(t *testing.T) {
 	})
 
 	t.Run("returns default name when not set", func(t *testing.T) {
-		check := httpcheck.New(
+		check := httpcheck.NewCheck(
 			httpcheck.WithURL("http://example.com"),
 		)
 

@@ -9,10 +9,6 @@ import (
 	"github.com/brpaz/go-healthcheck/v2/checks"
 )
 
-const (
-	Name = "memory-check"
-)
-
 // MemoryStats represents memory statistics
 type MemoryStats struct {
 	Total     uint64
@@ -60,12 +56,12 @@ func WithMemoryReader(reader MemoryReader) Option {
 	}
 }
 
-// New creates a new Memory Check instance with optional configuration.
-func New(opts ...Option) *Check {
+// NewCheck creates a new Memory Check instance with optional configuration.
+func NewCheck(opts ...Option) *Check {
 	check := &Check{
-		name:          Name,
+		name:          "memory",
 		warnThreshold: 80.0,
-		failThreshold: 90.0,
+		failThreshold: 95.0,
 		reader:        &DefaultMemoryReader{},
 	}
 
@@ -110,7 +106,6 @@ func (c *Check) Run(ctx context.Context) checks.Result {
 			memStats.UsedPct, c.warnThreshold)
 	} else {
 		result.Status = checks.StatusPass
-		result.Output = fmt.Sprintf("memory usage normal: %.1f%% used", memStats.UsedPct)
 	}
 
 	return result

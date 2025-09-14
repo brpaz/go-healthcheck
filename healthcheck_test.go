@@ -57,7 +57,7 @@ func TestHealthCheck_New(t *testing.T) {
 
 	t.Run("With Checks", func(t *testing.T) {
 		t.Parallel()
-		check := mockcheck.New(
+		check := mockcheck.NewCheck(
 			mockcheck.WithName("mockcheck-check"),
 			mockcheck.WithStatus(checks.StatusPass),
 		)
@@ -75,7 +75,7 @@ func TestHealthCheck_AddCheck(t *testing.T) {
 	t.Parallel()
 
 	healthcheck := newHealthTest()
-	healthcheck.AddCheck(mockcheck.New(
+	healthcheck.AddCheck(mockcheck.NewCheck(
 		mockcheck.WithName("mockcheck-check"),
 		mockcheck.WithStatus(checks.StatusPass),
 	))
@@ -101,7 +101,7 @@ func TestHealthCheck_Execute(t *testing.T) {
 	t.Run("Passes With Single Passing Check", func(t *testing.T) {
 		t.Parallel()
 
-		check := mockcheck.New(
+		check := mockcheck.NewCheck(
 			mockcheck.WithName("mockcheck-check"),
 			mockcheck.WithStatus(checks.StatusPass),
 		)
@@ -122,12 +122,12 @@ func TestHealthCheck_Execute(t *testing.T) {
 	t.Run("Fails With Single Failing Check", func(t *testing.T) {
 		t.Parallel()
 
-		failedcheck := mockcheck.New(
+		failedcheck := mockcheck.NewCheck(
 			mockcheck.WithName("fail-check"),
 			mockcheck.WithStatus(checks.StatusFail),
 		)
 
-		successcheck := mockcheck.New(
+		successcheck := mockcheck.NewCheck(
 			mockcheck.WithName("success-check"),
 			mockcheck.WithStatus(checks.StatusPass),
 		)
@@ -151,17 +151,17 @@ func TestHealthCheck_Execute(t *testing.T) {
 
 		assert.Equal(t, checks.StatusFail, failedCheckResult[0].Status)
 		assert.Equal(t, checks.StatusPass, successCheckResult[0].Status)
-		assert.Equal(t, failedCheckResult[0].Output, "mock check failed")
+		assert.Equal(t, failedCheckResult[0].Output, "check failed")
 	})
 
 	t.Run("Warns With One Warning Check", func(t *testing.T) {
 		t.Parallel()
 
-		successCheck := mockcheck.New(
+		successCheck := mockcheck.NewCheck(
 			mockcheck.WithName("success-check"),
 			mockcheck.WithStatus(checks.StatusPass),
 		)
-		warningcheck := mockcheck.New(
+		warningcheck := mockcheck.NewCheck(
 			mockcheck.WithName("warning-check"),
 			mockcheck.WithStatus(checks.StatusWarn),
 		)

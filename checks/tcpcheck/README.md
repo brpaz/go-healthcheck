@@ -10,9 +10,8 @@ Package tcpcheck provides TCP/UDP port connectivity health checks. It verifies t
 
 ## Index
 
-- [Constants](<#constants>)
 - [type Check](<#Check>)
-  - [func New\(opts ...Option\) \*Check](<#New>)
+  - [func NewCheck\(opts ...Option\) \*Check](<#NewCheck>)
   - [func \(c \*Check\) Address\(\) string](<#Check.Address>)
   - [func \(c \*Check\) GetName\(\) string](<#Check.GetName>)
   - [func \(c \*Check\) Run\(ctx context.Context\) checks.Result](<#Check.Run>)
@@ -29,18 +28,8 @@ Package tcpcheck provides TCP/UDP port connectivity health checks. It verifies t
   - [func WithTimeout\(timeout time.Duration\) Option](<#WithTimeout>)
 
 
-## Constants
-
-<a name="Name"></a>
-
-```go
-const (
-    Name = "tcp-check"
-)
-```
-
 <a name="Check"></a>
-## type [Check](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L28-L35>)
+## type [Check](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L27-L34>)
 
 Check represents a TCP/UDP port health check that verifies connectivity.
 
@@ -50,17 +39,17 @@ type Check struct {
 }
 ```
 
-<a name="New"></a>
-### func [New](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L97>)
+<a name="NewCheck"></a>
+### func [NewCheck](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L96>)
 
 ```go
-func New(opts ...Option) *Check
+func NewCheck(opts ...Option) *Check
 ```
 
-New creates a new TCP/UDP Check instance with optional configuration.
+NewCheck creates a new TCP/UDP Check instance with optional configuration.
 
 <a name="Check.Address"></a>
-### func \(\*Check\) [Address](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L168>)
+### func \(\*Check\) [Address](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L167>)
 
 ```go
 func (c *Check) Address() string
@@ -69,7 +58,7 @@ func (c *Check) Address() string
 Address returns the full address string for this check
 
 <a name="Check.GetName"></a>
-### func \(\*Check\) [GetName](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L115>)
+### func \(\*Check\) [GetName](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L114>)
 
 ```go
 func (c *Check) GetName() string
@@ -78,7 +67,7 @@ func (c *Check) GetName() string
 GetName returns the name of the check.
 
 <a name="Check.Run"></a>
-### func \(\*Check\) [Run](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L120>)
+### func \(\*Check\) [Run](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L119>)
 
 ```go
 func (c *Check) Run(ctx context.Context) checks.Result
@@ -87,7 +76,7 @@ func (c *Check) Run(ctx context.Context) checks.Result
 Run executes the TCP/UDP health check and returns the result.
 
 <a name="DefaultDialer"></a>
-## type [DefaultDialer](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L43-L45>)
+## type [DefaultDialer](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L42-L44>)
 
 DefaultDialer wraps the standard net.Dialer
 
@@ -98,7 +87,7 @@ type DefaultDialer struct {
 ```
 
 <a name="DefaultDialer.DialContext"></a>
-### func \(\*DefaultDialer\) [DialContext](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L47>)
+### func \(\*DefaultDialer\) [DialContext](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L46>)
 
 ```go
 func (d *DefaultDialer) DialContext(ctx context.Context, network, address string) (net.Conn, error)
@@ -107,7 +96,7 @@ func (d *DefaultDialer) DialContext(ctx context.Context, network, address string
 
 
 <a name="Dialer"></a>
-## type [Dialer](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L38-L40>)
+## type [Dialer](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L37-L39>)
 
 Dialer interface allows for custom dialers \(useful for testing\)
 
@@ -118,7 +107,7 @@ type Dialer interface {
 ```
 
 <a name="NetworkType"></a>
-## type [NetworkType](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L20>)
+## type [NetworkType](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L19>)
 
 NetworkType represents the type of network connection \(tcp, udp, etc.\)
 
@@ -136,7 +125,7 @@ const (
 ```
 
 <a name="Option"></a>
-## type [Option](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L52>)
+## type [Option](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L51>)
 
 Option is a functional option for configuring Check.
 
@@ -145,7 +134,7 @@ type Option func(*Check)
 ```
 
 <a name="WithDialer"></a>
-### func [WithDialer](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L90>)
+### func [WithDialer](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L89>)
 
 ```go
 func WithDialer(dialer Dialer) Option
@@ -154,7 +143,7 @@ func WithDialer(dialer Dialer) Option
 WithDialer sets a custom dialer for the connection.
 
 <a name="WithHost"></a>
-### func [WithHost](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L62>)
+### func [WithHost](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L61>)
 
 ```go
 func WithHost(host string) Option
@@ -163,7 +152,7 @@ func WithHost(host string) Option
 WithHost sets the host to connect to.
 
 <a name="WithName"></a>
-### func [WithName](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L55>)
+### func [WithName](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L54>)
 
 ```go
 func WithName(name string) Option
@@ -172,7 +161,7 @@ func WithName(name string) Option
 WithName sets the name of the check.
 
 <a name="WithNetwork"></a>
-### func [WithNetwork](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L76>)
+### func [WithNetwork](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L75>)
 
 ```go
 func WithNetwork(network NetworkType) Option
@@ -181,7 +170,7 @@ func WithNetwork(network NetworkType) Option
 WithNetwork sets the network type \(tcp or udp\).
 
 <a name="WithPort"></a>
-### func [WithPort](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L69>)
+### func [WithPort](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L68>)
 
 ```go
 func WithPort(port int) Option
@@ -190,7 +179,7 @@ func WithPort(port int) Option
 WithPort sets the port to connect to.
 
 <a name="WithTimeout"></a>
-### func [WithTimeout](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L83>)
+### func [WithTimeout](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L82>)
 
 ```go
 func WithTimeout(timeout time.Duration) Option

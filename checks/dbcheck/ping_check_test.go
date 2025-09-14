@@ -1,8 +1,7 @@
-package pingcheck_test
+package dbcheck_test
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"testing"
 
@@ -10,10 +9,10 @@ import (
 	"github.com/stretchr/testify/mock"
 
 	"github.com/brpaz/go-healthcheck/v2/checks"
-	"github.com/brpaz/go-healthcheck/v2/checks/dbcheck/pingcheck"
+	"github.com/brpaz/go-healthcheck/v2/checks/dbcheck"
 )
 
-// MockDatabasePinger is a mock implementation of the database interface
+// MockDatabasePinger is a mock implementation of the database pinger interface
 type MockDatabasePinger struct {
 	mock.Mock
 }
@@ -21,11 +20,6 @@ type MockDatabasePinger struct {
 func (m *MockDatabasePinger) PingContext(ctx context.Context) error {
 	args := m.Called(ctx)
 	return args.Error(0)
-}
-
-func (m *MockDatabasePinger) Stats() sql.DBStats {
-	args := m.Called()
-	return args.Get(0).(sql.DBStats)
 }
 
 func TestPingCheck_Run(t *testing.T) {
@@ -37,9 +31,9 @@ func TestPingCheck_Run(t *testing.T) {
 		mockDB := &MockDatabasePinger{}
 		mockDB.On("PingContext", mock.Anything).Return(nil)
 
-		check := pingcheck.New(
-			pingcheck.WithPingName("test-db-check"),
-			pingcheck.WithPingDB(mockDB),
+		check := dbcheck.NewPing(
+			dbcheck.WithPingName("test-db-check"),
+			dbcheck.WithPingDB(mockDB),
 		)
 
 		result := check.Run(context.Background())
@@ -53,17 +47,31 @@ func TestPingCheck_Run(t *testing.T) {
 		t.Parallel()
 
 		mockDB := &MockDatabasePinger{}
-		mockDB.On("PingContext", mock.Anything).Return(errors.New("connection failed"))
+		mockDB.On("PingContext", mock.Anything).Return(errors.New("connection error"))
 
-		check := pingcheck.New(
-			pingcheck.WithPingName("test-db-check"),
-			pingcheck.WithPingDB(mockDB),
+		check := dbcheck.NewPing(
+			dbcheck.WithPingName("test-db-check"),
+			dbcheck.WithPingDB(mockDB),
 		)
 
 		result := check.Run(context.Background())
 
 		assert.Equal(t, checks.StatusFail, result.Status)
-		assert.Contains(t, result.Output, "connection failed")
+		assert.Contains(t, result.Output, "database ping failed")
+		assert.Contains(t, result.Output, "connection error")
 		mockDB.AssertExpectations(t)
+	})
+
+	t.Run("check fails when database connection is nil", func(t *testing.T) {
+		t.Parallel()
+
+		check := dbcheck.NewPing(
+			dbcheck.WithPingName("test-db-check"),
+		)
+
+		result := check.Run(context.Background())
+
+		assert.Equal(t, checks.StatusFail, result.Status)
+		assert.Equal(t, "database connection is required", result.Output)
 	})
 }
