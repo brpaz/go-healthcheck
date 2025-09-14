@@ -9,7 +9,8 @@ permissions:
   pull-requests: write
 
 jobs:
-  deploy:
+  update-changelog:
+    name: Update Changelog
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
