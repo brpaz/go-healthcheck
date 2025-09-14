@@ -17,7 +17,6 @@ package main
 
 import (
     "github.com/brpaz/go-healthcheck"
-    healthHandler "github.com/brpaz/go-healthcheck/handler"
     "github.com/brpaz/go-healthcheck/checks/httpcheck"
     "net/http"
 )
@@ -30,13 +29,13 @@ func main() {
         healthcheck.WithReleaseID("sha256:abcdef1234567890"),
         healthcheck.WithChecks(
             httpcheck.New(
-                httpcheck.WithName("Google HTTP Check"),
+                httpcheck.WithName("http:google"),
                 httpcheck.WithURL("https://www.google.com"),
                 httpcheck.WithExpectedStatus(200)
             ),
         ),
     )
-    http.Handle("/health", healthHandler.HealthHandler(hc))
+    http.Handle("/health", healthcheck.HealthHandler(hc))
     http.ListenAndServe(":8080", nil)
 }
 ```
@@ -50,10 +49,9 @@ When requesting the `/health` endpoint, you will receive a JSON response similar
   "description": "My Service Healthcheck",
   "version": "1.0.0",
   "releaseId": "sha256:abcdef1234567890",
-  "checks": [
-    "Google HTTP Check": {
+  "checks": {
+    "http:google": {
       "status": "pass",
-      "componentType": "http",
       "observedValue": 5,
       "observedUnit": "ms",
       "time": "2024-06-01T12:00:00Z"

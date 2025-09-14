@@ -1,4 +1,4 @@
-package handler_test
+package healthcheck_test
 
 import (
 	"encoding/json"
@@ -11,7 +11,6 @@ import (
 	"github.com/brpaz/go-healthcheck"
 	"github.com/brpaz/go-healthcheck/checks"
 	"github.com/brpaz/go-healthcheck/checks/mockcheck"
-	"github.com/brpaz/go-healthcheck/handler"
 )
 
 var (
@@ -47,13 +46,13 @@ func TestHandler(t *testing.T) {
 		req, _ := http.NewRequest("GET", "/health", nil)
 		rr := httptest.NewRecorder()
 
-		healthHandler := handler.HealthHandler(hc)
+		healthHandler := healthcheck.HealthHandler(hc)
 		healthHandler.ServeHTTP(rr, req)
 
 		assert.Equal(t, http.StatusOK, rr.Code)
 		assert.Equal(t, "application/health+json", rr.Header().Get("Content-Type"))
 
-		var response handler.HealthHttpResponse
+		var response healthcheck.HealthHttpResponse
 		err := json.Unmarshal(rr.Body.Bytes(), &response)
 		assert.NoError(t, err)
 		assert.Equal(t, checks.StatusPass, response.Status)
@@ -79,13 +78,13 @@ func TestHandler(t *testing.T) {
 		req, _ := http.NewRequest("GET", "/health", nil)
 		rr := httptest.NewRecorder()
 
-		healthHandler := handler.HealthHandler(svc)
+		healthHandler := healthcheck.HealthHandler(svc)
 		healthHandler.ServeHTTP(rr, req)
 
 		assert.Equal(t, http.StatusServiceUnavailable, rr.Code)
 		assert.Equal(t, "application/health+json", rr.Header().Get("Content-Type"))
 
-		var response handler.HealthHttpResponse
+		var response healthcheck.HealthHttpResponse
 		err := json.Unmarshal(rr.Body.Bytes(), &response)
 		assert.NoError(t, err)
 		assert.Equal(t, checks.StatusFail, response.Status)

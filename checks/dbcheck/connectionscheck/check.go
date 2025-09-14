@@ -31,46 +31,46 @@ type ConnectionsCheck struct {
 	failThreshold float64
 }
 
-// ConnectionsCheckOption is a functional option for configuring ConnectionsCheck.
-type ConnectionsCheckOption func(*ConnectionsCheck)
+// Option is a functional option for configuring ConnectionsCheck.
+type Option func(*ConnectionsCheck)
 
 // WithName sets the name of the connections check.
-func WithName(name string) ConnectionsCheckOption {
+func WithName(name string) Option {
 	return func(c *ConnectionsCheck) {
 		c.name = name
 	}
 }
 
 // WithDB sets the database connection to use for the health check.
-func WithDB(db DatabaseStatsProvider) ConnectionsCheckOption {
+func WithDB(db DatabaseStatsProvider) Option {
 	return func(c *ConnectionsCheck) {
 		c.db = db
 	}
 }
 
 // WithTimeout sets the timeout for the connections check operation.
-func WithTimeout(timeout time.Duration) ConnectionsCheckOption {
+func WithTimeout(timeout time.Duration) Option {
 	return func(c *ConnectionsCheck) {
 		c.timeout = timeout
 	}
 }
 
 // WithWarnThreshold sets the warning threshold as a percentage (0.0-1.0) of max connections.
-func WithWarnThreshold(threshold float64) ConnectionsCheckOption {
+func WithWarnThreshold(threshold float64) Option {
 	return func(c *ConnectionsCheck) {
 		c.warnThreshold = threshold
 	}
 }
 
 // WithFailThreshold sets the failure threshold as a percentage (0.0-1.0) of max connections.
-func WithFailThreshold(threshold float64) ConnectionsCheckOption {
+func WithFailThreshold(threshold float64) Option {
 	return func(c *ConnectionsCheck) {
 		c.failThreshold = threshold
 	}
 }
 
 // New creates a new Database Connections Check instance with optional configuration.
-func New(opts ...ConnectionsCheckOption) *ConnectionsCheck {
+func New(opts ...Option) *ConnectionsCheck {
 	check := &ConnectionsCheck{
 		name:          "db-connections-check",
 		db:            nil,

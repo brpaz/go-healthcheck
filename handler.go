@@ -1,11 +1,10 @@
-package handler
+package healthcheck
 
 import (
 	"encoding/json"
 	"net/http"
 	"strings"
 
-	"github.com/brpaz/go-healthcheck"
 	"github.com/brpaz/go-healthcheck/checks"
 )
 
@@ -33,7 +32,7 @@ func buildOutput(checks map[string][]checks.Result) string {
 }
 
 // HealthHandler provides an HTTP handler that can be used to serve the health check endpoint.
-func HealthHandler(healthchecker *healthcheck.HealthCheck) http.HandlerFunc {
+func HealthHandler(healthchecker *HealthCheck) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		w.Header().Set("Content-Type", "application/health+json")

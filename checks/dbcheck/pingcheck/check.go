@@ -12,6 +12,7 @@ const (
 	defaultTimeout = 5 * time.Second
 )
 
+// DatabasePinger interface for database instances that support pinging.
 type DatabasePinger interface {
 	PingContext(ctx context.Context) error
 }
@@ -23,32 +24,32 @@ type PingCheck struct {
 	timeout time.Duration
 }
 
-// PingCheckOption is a functional option for configuring PingCheck.
-type PingCheckOption func(*PingCheck)
+// Option is a functional option for configuring PingCheck.
+type Option func(*PingCheck)
 
 // WithPingName sets the name of the Ping check.
-func WithPingName(name string) PingCheckOption {
+func WithPingName(name string) Option {
 	return func(c *PingCheck) {
 		c.name = name
 	}
 }
 
 // WithPingDB sets the database connection to use for the health check.
-func WithPingDB(db DatabasePinger) PingCheckOption {
+func WithPingDB(db DatabasePinger) Option {
 	return func(c *PingCheck) {
 		c.db = db
 	}
 }
 
 // WithPingTimeout sets the timeout for the database ping operation.
-func WithPingTimeout(timeout time.Duration) PingCheckOption {
+func WithPingTimeout(timeout time.Duration) Option {
 	return func(c *PingCheck) {
 		c.timeout = timeout
 	}
 }
 
 // New creates a new SQL Ping Check instance with optional configuration.
-func New(opts ...PingCheckOption) *PingCheck {
+func New(opts ...Option) *PingCheck {
 	check := &PingCheck{
 		name:    "sql-check",
 		db:      nil,

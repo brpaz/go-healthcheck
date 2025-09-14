@@ -30,23 +30,23 @@ import (
   "net/http"
 
   "github.com/brpaz/go-healthcheck"
-  "github.com/brpaz/go-healthcheck/handler"
   "github.com/brpaz/go-healthcheck/checks/mockcheck"
 )
 
 func main() {
     mycheck := mockcheck.New(
-    mockcheck.WithName("my-check"),
+      mockcheck.WithName("my-check"),
+      mockcheck.WithStatus(checks.StatusPass),
   )
   hc := healthcheck.New(
     healthcheck.WithServiceID("my-service"),
     healthcheck.WithDescription("My Service"),
     healthcheck.WithVersion("1.0.0"),
     healthcheck.WithReleaseID("1.0.0-SNAPSHOT"),
-    healthcheck.WithCheck(mycheck),
+    healthcheck.WithChecks(mycheck),
   )
 
-  http.HandleFunc("/health", handler.HealthHandler(hc))
+  http.HandleFunc("/health", healthcheck.HealthHandler(hc))
   http.ListenAndServe(":8080", nil)
 }
 ```

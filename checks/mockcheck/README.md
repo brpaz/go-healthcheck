@@ -8,17 +8,26 @@ import "github.com/brpaz/go-healthcheck/checks/mockcheck"
 
 ## Index
 
+- [Variables](<#variables>)
 - [type Check](<#Check>)
   - [func New\(opts ...Option\) \*Check](<#New>)
   - [func \(c \*Check\) GetName\(\) string](<#Check.GetName>)
-  - [func \(c \*Check\) Run\(ctx context.Context\) \[\]checks.Result](<#Check.Run>)
+  - [func \(c \*Check\) Run\(ctx context.Context\) checks.Result](<#Check.Run>)
 - [type Option](<#Option>)
   - [func WithName\(name string\) Option](<#WithName>)
   - [func WithStatus\(status checks.Status\) Option](<#WithStatus>)
 
 
+## Variables
+
+<a name="CheckName"></a>
+
+```go
+var CheckName = "mock"
+```
+
 <a name="Check"></a>
-## type [Check](<https://github.com/brpaz/go-healthcheck/blob/master/checks/mockcheck/check.go#L12-L15>)
+## type [Check](<https://github.com/brpaz/go-healthcheck/blob/master/checks/mockcheck/check.go#L14-L17>)
 
 Check is a mock implementation of the Check interface for testing purposes. It returns a single check result with the specified result status.
 
@@ -29,7 +38,7 @@ type Check struct {
 ```
 
 <a name="New"></a>
-### func [New](<https://github.com/brpaz/go-healthcheck/blob/master/checks/mockcheck/check.go#L34>)
+### func [New](<https://github.com/brpaz/go-healthcheck/blob/master/checks/mockcheck/check.go#L37>)
 
 ```go
 func New(opts ...Option) *Check
@@ -38,7 +47,7 @@ func New(opts ...Option) *Check
 New creates a new MockCheck instance with optional configuration.
 
 <a name="Check.GetName"></a>
-### func \(\*Check\) [GetName](<https://github.com/brpaz/go-healthcheck/blob/master/checks/mockcheck/check.go#L46>)
+### func \(\*Check\) [GetName](<https://github.com/brpaz/go-healthcheck/blob/master/checks/mockcheck/check.go#L49>)
 
 ```go
 func (c *Check) GetName() string
@@ -47,25 +56,25 @@ func (c *Check) GetName() string
 GetName returns the name of the check.
 
 <a name="Check.Run"></a>
-### func \(\*Check\) [Run](<https://github.com/brpaz/go-healthcheck/blob/master/checks/mockcheck/check.go#L51>)
+### func \(\*Check\) [Run](<https://github.com/brpaz/go-healthcheck/blob/master/checks/mockcheck/check.go#L54>)
 
 ```go
-func (c *Check) Run(ctx context.Context) []checks.Result
+func (c *Check) Run(ctx context.Context) checks.Result
 ```
 
 Execute runs the mock check and returns a single check result based on the configured status.
 
 <a name="Option"></a>
-## type [Option](<https://github.com/brpaz/go-healthcheck/blob/master/checks/mockcheck/check.go#L17>)
+## type [Option](<https://github.com/brpaz/go-healthcheck/blob/master/checks/mockcheck/check.go#L20>)
 
-
+Option is a functional option for configuring the MockCheck.
 
 ```go
 type Option func(*Check)
 ```
 
 <a name="WithName"></a>
-### func [WithName](<https://github.com/brpaz/go-healthcheck/blob/master/checks/mockcheck/check.go#L20>)
+### func [WithName](<https://github.com/brpaz/go-healthcheck/blob/master/checks/mockcheck/check.go#L23>)
 
 ```go
 func WithName(name string) Option
@@ -74,7 +83,7 @@ func WithName(name string) Option
 WithName sets the name of the check.
 
 <a name="WithStatus"></a>
-### func [WithStatus](<https://github.com/brpaz/go-healthcheck/blob/master/checks/mockcheck/check.go#L27>)
+### func [WithStatus](<https://github.com/brpaz/go-healthcheck/blob/master/checks/mockcheck/check.go#L30>)
 
 ```go
 func WithStatus(status checks.Status) Option

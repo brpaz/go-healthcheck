@@ -10,14 +10,14 @@ Package healthcheck provides a library for creating health check endpoints. It i
 
 package main
 
-import "net/http" import "github.com/brpaz/go\-healthcheck" import "github.com/brpaz/go\-healthcheck/pkg/checks/mockcheck"
+import "net/http" import "github.com/brpaz/go\-healthcheck" import "github.com/brpaz/go\-healthcheck/checks/mockcheck"
 
 ```
 func main() {
     mycheck := mockcheck.New(
 		mockcheck.WithName("my-check"),
 	)
-	hc := healthcheck.New(
+	hc := healthcheck.NewHealthChecker(
 		healthcheck.WithServiceID("my-service"),
 		healthcheck.WithDescription("My Service"),
 		healthcheck.WithVersion("1.0.0"),
@@ -25,39 +25,55 @@ func main() {
 		healthcheck.WithCheck(mycheck),
 	)
 
-	http.HandleFunc("/health", healthcheck.Handler(hc))
+	http.HandleFunc("/health", healthcheck.HealthHandler(hc))
 	http.ListenAndServe(":8080", nil)
 }
 ```
 
 ## Index
 
-- [func Handler\(hc \*HealthCheck\) http.HandlerFunc](<#Handler>)
+- [func HealthHandler\(healthchecker \*HealthCheck\) http.HandlerFunc](<#HealthHandler>)
+- [type CheckRunResult](<#CheckRunResult>)
 - [type HealthCheck](<#HealthCheck>)
-  - [func New\(opts ...Option\) \*HealthCheck](<#New>)
-  - [func \(h \*HealthCheck\) Execute\(ctx context.Context\) Response](<#HealthCheck.Execute>)
+  - [func NewHealthCheck\(opts ...Option\) \*HealthCheck](<#NewHealthCheck>)
+  - [func \(h \*HealthCheck\) AddCheck\(check checks.Check\)](<#HealthCheck.AddCheck>)
+  - [func \(h \*HealthCheck\) Execute\(ctx context.Context\) CheckRunResult](<#HealthCheck.Execute>)
+  - [func \(h \*HealthCheck\) GetChecks\(\) \[\]checks.Check](<#HealthCheck.GetChecks>)
+- [type HealthChecker](<#HealthChecker>)
+- [type HealthHttpResponse](<#HealthHttpResponse>)
 - [type Option](<#Option>)
   - [func WithCheck\(check checks.Check\) Option](<#WithCheck>)
   - [func WithDescription\(desc string\) Option](<#WithDescription>)
   - [func WithReleaseID\(id string\) Option](<#WithReleaseID>)
   - [func WithServiceID\(id string\) Option](<#WithServiceID>)
   - [func WithVersion\(version string\) Option](<#WithVersion>)
-- [type Response](<#Response>)
 
 
-<a name="Handler"></a>
-## func [Handler](<https://github.com/brpaz/go-healthcheck/blob/master/health.go#L161>)
+<a name="HealthHandler"></a>
+## func [HealthHandler](<https://github.com/brpaz/go-healthcheck/blob/master/handler.go#L35>)
 
 ```go
-func Handler(hc *HealthCheck) http.HandlerFunc
+func HealthHandler(healthchecker *HealthCheck) http.HandlerFunc
 ```
 
-Handler provides an HTTP handler that can be used to serve the health check endpoint.
+HealthHandler provides an HTTP handler that can be used to serve the health check endpoint.
+
+<a name="CheckRunResult"></a>
+## type [CheckRunResult](<https://github.com/brpaz/go-healthcheck/blob/master/healthcheck.go#L110-L113>)
+
+CheckRunResult aggregates the result of running a group of checks.
+
+```go
+type CheckRunResult struct {
+    Status checks.Status
+    Checks map[string][]checks.Result
+}
+```
 
 <a name="HealthCheck"></a>
-## type [HealthCheck](<https://github.com/brpaz/go-healthcheck/blob/master/health.go#L38-L44>)
+## type [HealthCheck](<https://github.com/brpaz/go-healthcheck/blob/master/healthcheck.go#L40-L46>)
 
-HealthCheck represents a collection of health checks for a service.
+HealthCheck aggregates multiple healthchecks and provides metadata about the service.
 
 ```go
 type HealthCheck struct {
@@ -69,26 +85,72 @@ type HealthCheck struct {
 }
 ```
 
-<a name="New"></a>
-### func [New](<https://github.com/brpaz/go-healthcheck/blob/master/health.go#L99>)
+<a name="NewHealthCheck"></a>
+### func [NewHealthCheck](<https://github.com/brpaz/go-healthcheck/blob/master/healthcheck.go#L87>)
 
 ```go
-func New(opts ...Option) *HealthCheck
+func NewHealthCheck(opts ...Option) *HealthCheck
 ```
 
-New creates a new HealthCheck instance with optional configuration.
+NewHealthCheck creates a new HealthChecker instance the provided options.
+
+<a name="HealthCheck.AddCheck"></a>
+### func \(\*HealthCheck\) [AddCheck](<https://github.com/brpaz/go-healthcheck/blob/master/healthcheck.go#L100>)
+
+```go
+func (h *HealthCheck) AddCheck(check checks.Check)
+```
+
+AddCheck adds a new check to the HealthCheck instance.
 
 <a name="HealthCheck.Execute"></a>
-### func \(\*HealthCheck\) [Execute](<https://github.com/brpaz/go-healthcheck/blob/master/health.go#L113>)
+### func \(\*HealthCheck\) [Execute](<https://github.com/brpaz/go-healthcheck/blob/master/healthcheck.go#L121>)
 
 ```go
-func (h *HealthCheck) Execute(ctx context.Context) Response
+func (h *HealthCheck) Execute(ctx context.Context) CheckRunResult
 ```
 
-Execute runs all checks in parallel and returns the result. The global health check status is calculated based on the statuses of all checks
+Execute runs all registered healthchecks and returns an aggregated result, composed of the overall status and the individual results of each check. The final status is determined as follows: \- If any check returns StatusFail, the overall status is StatusFail. \- If no checks return StatusFail but at least one returns StatusWarn, the overall status is StatusWarn. \- If all checks return StatusPass, the overall status is StatusPass.
+
+<a name="HealthCheck.GetChecks"></a>
+### func \(\*HealthCheck\) [GetChecks](<https://github.com/brpaz/go-healthcheck/blob/master/healthcheck.go#L105>)
+
+```go
+func (h *HealthCheck) GetChecks() []checks.Check
+```
+
+GetChecks returns the registered checks.
+
+<a name="HealthChecker"></a>
+## type [HealthChecker](<https://github.com/brpaz/go-healthcheck/blob/master/healthcheck.go#L35-L37>)
+
+
+
+```go
+type HealthChecker interface {
+    Execute(ctx context.Context) CheckRunResult
+}
+```
+
+<a name="HealthHttpResponse"></a>
+## type [HealthHttpResponse](<https://github.com/brpaz/go-healthcheck/blob/master/handler.go#L12-L20>)
+
+HealthHttpResponse represents the structure of the health check HTTP response.
+
+```go
+type HealthHttpResponse struct {
+    ServiceID   string                     `json:"serviceId,omitempty"`
+    Description string                     `json:"description,omitempty"`
+    Version     string                     `json:"version,omitempty"`
+    ReleaseID   string                     `json:"releaseId,omitempty"`
+    Output      string                     `json:"output,omitempty"`
+    Status      checks.Status              `json:"status"`
+    Checks      map[string][]checks.Result `json:"checks"`
+}
+```
 
 <a name="Option"></a>
-## type [Option](<https://github.com/brpaz/go-healthcheck/blob/master/health.go#L61>)
+## type [Option](<https://github.com/brpaz/go-healthcheck/blob/master/healthcheck.go#L49>)
 
 Option is a functional option for configuring HealthCheck.
 
@@ -97,7 +159,7 @@ type Option func(*HealthCheck)
 ```
 
 <a name="WithCheck"></a>
-### func [WithCheck](<https://github.com/brpaz/go-healthcheck/blob/master/health.go#L92>)
+### func [WithCheck](<https://github.com/brpaz/go-healthcheck/blob/master/healthcheck.go#L80>)
 
 ```go
 func WithCheck(check checks.Check) Option
@@ -106,7 +168,7 @@ func WithCheck(check checks.Check) Option
 WithCheck registers a check in the HealthCheck.
 
 <a name="WithDescription"></a>
-### func [WithDescription](<https://github.com/brpaz/go-healthcheck/blob/master/health.go#L71>)
+### func [WithDescription](<https://github.com/brpaz/go-healthcheck/blob/master/healthcheck.go#L59>)
 
 ```go
 func WithDescription(desc string) Option
@@ -115,7 +177,7 @@ func WithDescription(desc string) Option
 WithDescription sets the description.
 
 <a name="WithReleaseID"></a>
-### func [WithReleaseID](<https://github.com/brpaz/go-healthcheck/blob/master/health.go#L85>)
+### func [WithReleaseID](<https://github.com/brpaz/go-healthcheck/blob/master/healthcheck.go#L73>)
 
 ```go
 func WithReleaseID(id string) Option
@@ -124,7 +186,7 @@ func WithReleaseID(id string) Option
 WithReleaseID sets the release ID.
 
 <a name="WithServiceID"></a>
-### func [WithServiceID](<https://github.com/brpaz/go-healthcheck/blob/master/health.go#L64>)
+### func [WithServiceID](<https://github.com/brpaz/go-healthcheck/blob/master/healthcheck.go#L52>)
 
 ```go
 func WithServiceID(id string) Option
@@ -133,29 +195,12 @@ func WithServiceID(id string) Option
 WithServiceID sets the service ID.
 
 <a name="WithVersion"></a>
-### func [WithVersion](<https://github.com/brpaz/go-healthcheck/blob/master/health.go#L78>)
+### func [WithVersion](<https://github.com/brpaz/go-healthcheck/blob/master/healthcheck.go#L66>)
 
 ```go
 func WithVersion(version string) Option
 ```
 
 WithVersion sets the version.
-
-<a name="Response"></a>
-## type [Response](<https://github.com/brpaz/go-healthcheck/blob/master/health.go#L50-L58>)
-
-Response represents the health check response structure. Health Check Response Format for HTTP APIs uses JSON format described in RFC 8259 and has the media type "application/health\+json". Its content consists of a single mandatory root field \("status"\) and several optional fields: See https://tools.ietf.org/id/draft-inadarei-api-health-check-05.html#section-3
-
-```go
-type Response struct {
-    ServiceID   string                     `json:"service_id,omitempty"`
-    Description string                     `json:"description,omitempty"`
-    Version     string                     `json:"version,omitempty"`
-    ReleaseID   string                     `json:"release_id,omitempty"`
-    Output      string                     `json:"output,omitempty"`
-    Status      checks.Status              `json:"status"`
-    Checks      map[string][]checks.Result `json:"checks"`
-}
-```
 
 Generated by [gomarkdoc](<https://github.com/princjef/gomarkdoc>)

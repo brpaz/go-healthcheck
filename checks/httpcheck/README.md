@@ -6,28 +6,26 @@
 import "github.com/brpaz/go-healthcheck/checks/httpcheck"
 ```
 
-Package httpcheck provides HTTP endpoint health checks. It requests HTTP endpoints and verifies their availability based on status codes and response times.
+Package httpcheck provides HTTP url health checks. It requests HTTP urls and verifies their availability based on status codes and response times.
 
 ## Index
 
 - [type Check](<#Check>)
   - [func New\(opts ...Option\) \*Check](<#New>)
   - [func \(c \*Check\) GetName\(\) string](<#Check.GetName>)
-  - [func \(c \*Check\) Run\(ctx context.Context\) \[\]checks.Result](<#Check.Run>)
+  - [func \(c \*Check\) Run\(ctx context.Context\) checks.Result](<#Check.Run>)
 - [type Option](<#Option>)
-  - [func WithComponentID\(componentID string\) Option](<#WithComponentID>)
-  - [func WithComponentType\(componentType string\) Option](<#WithComponentType>)
-  - [func WithEndpoint\(endpoint string\) Option](<#WithEndpoint>)
+  - [func WithExpectedStatus\(codes ...int\) Option](<#WithExpectedStatus>)
   - [func WithHTTPClient\(client \*http.Client\) Option](<#WithHTTPClient>)
   - [func WithName\(name string\) Option](<#WithName>)
-  - [func WithSuccessStatusCodes\(codes ...int\) Option](<#WithSuccessStatusCodes>)
   - [func WithTimeout\(timeout time.Duration\) Option](<#WithTimeout>)
+  - [func WithURL\(url string\) Option](<#WithURL>)
 
 
 <a name="Check"></a>
-## type [Check](<https://github.com/brpaz/go-healthcheck/blob/master/checks/httpcheck/check.go#L17-L25>)
+## type [Check](<https://github.com/brpaz/go-healthcheck/blob/master/checks/httpcheck/check.go#L17-L23>)
 
-Check represents an HTTP health check that verifies endpoint availability.
+Check represents an HTTP health check that verifies url availability.
 
 ```go
 type Check struct {
@@ -36,7 +34,7 @@ type Check struct {
 ```
 
 <a name="New"></a>
-### func [New](<https://github.com/brpaz/go-healthcheck/blob/master/checks/httpcheck/check.go#L80>)
+### func [New](<https://github.com/brpaz/go-healthcheck/blob/master/checks/httpcheck/check.go#L65>)
 
 ```go
 func New(opts ...Option) *Check
@@ -45,7 +43,7 @@ func New(opts ...Option) *Check
 New creates a new HTTP Check instance with optional configuration.
 
 <a name="Check.GetName"></a>
-### func \(\*Check\) [GetName](<https://github.com/brpaz/go-healthcheck/blob/master/checks/httpcheck/check.go#L99>)
+### func \(\*Check\) [GetName](<https://github.com/brpaz/go-healthcheck/blob/master/checks/httpcheck/check.go#L82>)
 
 ```go
 func (c *Check) GetName() string
@@ -54,16 +52,16 @@ func (c *Check) GetName() string
 GetName returns the name of the check.
 
 <a name="Check.Run"></a>
-### func \(\*Check\) [Run](<https://github.com/brpaz/go-healthcheck/blob/master/checks/httpcheck/check.go#L104>)
+### func \(\*Check\) [Run](<https://github.com/brpaz/go-healthcheck/blob/master/checks/httpcheck/check.go#L87>)
 
 ```go
-func (c *Check) Run(ctx context.Context) []checks.Result
+func (c *Check) Run(ctx context.Context) checks.Result
 ```
 
 Run executes the HTTP health check and returns the result.
 
 <a name="Option"></a>
-## type [Option](<https://github.com/brpaz/go-healthcheck/blob/master/checks/httpcheck/check.go#L28>)
+## type [Option](<https://github.com/brpaz/go-healthcheck/blob/master/checks/httpcheck/check.go#L26>)
 
 Option is a functional option for configuring Check.
 
@@ -71,35 +69,17 @@ Option is a functional option for configuring Check.
 type Option func(*Check)
 ```
 
-<a name="WithComponentID"></a>
-### func [WithComponentID](<https://github.com/brpaz/go-healthcheck/blob/master/checks/httpcheck/check.go#L73>)
+<a name="WithExpectedStatus"></a>
+### func [WithExpectedStatus](<https://github.com/brpaz/go-healthcheck/blob/master/checks/httpcheck/check.go#L58>)
 
 ```go
-func WithComponentID(componentID string) Option
+func WithExpectedStatus(codes ...int) Option
 ```
 
-
-
-<a name="WithComponentType"></a>
-### func [WithComponentType](<https://github.com/brpaz/go-healthcheck/blob/master/checks/httpcheck/check.go#L67>)
-
-```go
-func WithComponentType(componentType string) Option
-```
-
-WithComponentType sets the component type for the check.
-
-<a name="WithEndpoint"></a>
-### func [WithEndpoint](<https://github.com/brpaz/go-healthcheck/blob/master/checks/httpcheck/check.go#L38>)
-
-```go
-func WithEndpoint(endpoint string) Option
-```
-
-WithEndpoint sets the endpoint of the check.
+WithExpectedStatus sets the status codes that will be considered as successful. By default, any status code less than 400 is considered a success.
 
 <a name="WithHTTPClient"></a>
-### func [WithHTTPClient](<https://github.com/brpaz/go-healthcheck/blob/master/checks/httpcheck/check.go#L52>)
+### func [WithHTTPClient](<https://github.com/brpaz/go-healthcheck/blob/master/checks/httpcheck/check.go#L50>)
 
 ```go
 func WithHTTPClient(client *http.Client) Option
@@ -108,7 +88,7 @@ func WithHTTPClient(client *http.Client) Option
 WithHTTPClient specifies a custom HTTP client to use for the health check.
 
 <a name="WithName"></a>
-### func [WithName](<https://github.com/brpaz/go-healthcheck/blob/master/checks/httpcheck/check.go#L31>)
+### func [WithName](<https://github.com/brpaz/go-healthcheck/blob/master/checks/httpcheck/check.go#L29>)
 
 ```go
 func WithName(name string) Option
@@ -116,22 +96,22 @@ func WithName(name string) Option
 
 WithName sets the name of the check.
 
-<a name="WithSuccessStatusCodes"></a>
-### func [WithSuccessStatusCodes](<https://github.com/brpaz/go-healthcheck/blob/master/checks/httpcheck/check.go#L60>)
-
-```go
-func WithSuccessStatusCodes(codes ...int) Option
-```
-
-WithSuccessStatusCodes sets the status codes that will be considered as successful. By default, any status code less than 400 is considered a success.
-
 <a name="WithTimeout"></a>
-### func [WithTimeout](<https://github.com/brpaz/go-healthcheck/blob/master/checks/httpcheck/check.go#L45>)
+### func [WithTimeout](<https://github.com/brpaz/go-healthcheck/blob/master/checks/httpcheck/check.go#L43>)
 
 ```go
 func WithTimeout(timeout time.Duration) Option
 ```
 
 WithTimeout sets the timeout of the check.
+
+<a name="WithURL"></a>
+### func [WithURL](<https://github.com/brpaz/go-healthcheck/blob/master/checks/httpcheck/check.go#L36>)
+
+```go
+func WithURL(url string) Option
+```
+
+WithURL sets the url of the check.
 
 Generated by [gomarkdoc](<https://github.com/princjef/gomarkdoc>)
