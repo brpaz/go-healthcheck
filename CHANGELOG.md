@@ -1,5 +1,14 @@
 # Changelog
 
+## v2.0.2 - 2025-09-14
+
+### What's Changed
+
+#### 🐛 Bug Fixes
+
+- fix(gomod): bump package version to comply with go standards @brpaz (#10)
+  **Full Changelog**: [https://github.com/brpaz/go-healthcheck/compare/v2.0.1...v2.0.2](https://github.com/brpaz/go-healthcheck/compare/v2.0.1...v2.0.2)
+
 ## v2.0.1 - 2025-09-14
 
 ### What's Changed
