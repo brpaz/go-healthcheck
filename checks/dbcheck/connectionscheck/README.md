@@ -3,7 +3,7 @@
 # connectionscheck
 
 ```go
-import "github.com/brpaz/go-healthcheck/checks/dbcheck/connectionscheck"
+import "github.com/brpaz/go-healthcheck/v2/checks/dbcheck/connectionscheck"
 ```
 
 Package connectionscheck provides database connections health check implementation.
@@ -11,16 +11,16 @@ Package connectionscheck provides database connections health check implementati
 ## Index
 
 - [type ConnectionsCheck](<#ConnectionsCheck>)
-  - [func New\(opts ...ConnectionsCheckOption\) \*ConnectionsCheck](<#New>)
+  - [func New\(opts ...Option\) \*ConnectionsCheck](<#New>)
   - [func \(c \*ConnectionsCheck\) GetName\(\) string](<#ConnectionsCheck.GetName>)
   - [func \(c \*ConnectionsCheck\) Run\(ctx context.Context\) checks.Result](<#ConnectionsCheck.Run>)
-- [type ConnectionsCheckOption](<#ConnectionsCheckOption>)
-  - [func WithDB\(db DatabaseStatsProvider\) ConnectionsCheckOption](<#WithDB>)
-  - [func WithFailThreshold\(threshold float64\) ConnectionsCheckOption](<#WithFailThreshold>)
-  - [func WithName\(name string\) ConnectionsCheckOption](<#WithName>)
-  - [func WithTimeout\(timeout time.Duration\) ConnectionsCheckOption](<#WithTimeout>)
-  - [func WithWarnThreshold\(threshold float64\) ConnectionsCheckOption](<#WithWarnThreshold>)
 - [type DatabaseStatsProvider](<#DatabaseStatsProvider>)
+- [type Option](<#Option>)
+  - [func WithDB\(db DatabaseStatsProvider\) Option](<#WithDB>)
+  - [func WithFailThreshold\(threshold float64\) Option](<#WithFailThreshold>)
+  - [func WithName\(name string\) Option](<#WithName>)
+  - [func WithTimeout\(timeout time.Duration\) Option](<#WithTimeout>)
+  - [func WithWarnThreshold\(threshold float64\) Option](<#WithWarnThreshold>)
 
 
 <a name="ConnectionsCheck"></a>
@@ -38,7 +38,7 @@ type ConnectionsCheck struct {
 ### func [New](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/connectionscheck/check.go#L73>)
 
 ```go
-func New(opts ...ConnectionsCheckOption) *ConnectionsCheck
+func New(opts ...Option) *ConnectionsCheck
 ```
 
 New creates a new Database Connections Check instance with optional configuration.
@@ -61,60 +61,6 @@ func (c *ConnectionsCheck) Run(ctx context.Context) checks.Result
 
 Run executes the database connections health check and returns the result.
 
-<a name="ConnectionsCheckOption"></a>
-## type [ConnectionsCheckOption](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/connectionscheck/check.go#L35>)
-
-ConnectionsCheckOption is a functional option for configuring ConnectionsCheck.
-
-```go
-type ConnectionsCheckOption func(*ConnectionsCheck)
-```
-
-<a name="WithDB"></a>
-### func [WithDB](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/connectionscheck/check.go#L45>)
-
-```go
-func WithDB(db DatabaseStatsProvider) ConnectionsCheckOption
-```
-
-WithDB sets the database connection to use for the health check.
-
-<a name="WithFailThreshold"></a>
-### func [WithFailThreshold](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/connectionscheck/check.go#L66>)
-
-```go
-func WithFailThreshold(threshold float64) ConnectionsCheckOption
-```
-
-WithFailThreshold sets the failure threshold as a percentage \(0.0\-1.0\) of max connections.
-
-<a name="WithName"></a>
-### func [WithName](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/connectionscheck/check.go#L38>)
-
-```go
-func WithName(name string) ConnectionsCheckOption
-```
-
-WithName sets the name of the connections check.
-
-<a name="WithTimeout"></a>
-### func [WithTimeout](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/connectionscheck/check.go#L52>)
-
-```go
-func WithTimeout(timeout time.Duration) ConnectionsCheckOption
-```
-
-WithTimeout sets the timeout for the connections check operation.
-
-<a name="WithWarnThreshold"></a>
-### func [WithWarnThreshold](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/connectionscheck/check.go#L59>)
-
-```go
-func WithWarnThreshold(threshold float64) ConnectionsCheckOption
-```
-
-WithWarnThreshold sets the warning threshold as a percentage \(0.0\-1.0\) of max connections.
-
 <a name="DatabaseStatsProvider"></a>
 ## type [DatabaseStatsProvider](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/connectionscheck/check.go#L20-L22>)
 
@@ -125,5 +71,59 @@ type DatabaseStatsProvider interface {
     Stats() sql.DBStats
 }
 ```
+
+<a name="Option"></a>
+## type [Option](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/connectionscheck/check.go#L35>)
+
+Option is a functional option for configuring ConnectionsCheck.
+
+```go
+type Option func(*ConnectionsCheck)
+```
+
+<a name="WithDB"></a>
+### func [WithDB](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/connectionscheck/check.go#L45>)
+
+```go
+func WithDB(db DatabaseStatsProvider) Option
+```
+
+WithDB sets the database connection to use for the health check.
+
+<a name="WithFailThreshold"></a>
+### func [WithFailThreshold](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/connectionscheck/check.go#L66>)
+
+```go
+func WithFailThreshold(threshold float64) Option
+```
+
+WithFailThreshold sets the failure threshold as a percentage \(0.0\-1.0\) of max connections.
+
+<a name="WithName"></a>
+### func [WithName](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/connectionscheck/check.go#L38>)
+
+```go
+func WithName(name string) Option
+```
+
+WithName sets the name of the connections check.
+
+<a name="WithTimeout"></a>
+### func [WithTimeout](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/connectionscheck/check.go#L52>)
+
+```go
+func WithTimeout(timeout time.Duration) Option
+```
+
+WithTimeout sets the timeout for the connections check operation.
+
+<a name="WithWarnThreshold"></a>
+### func [WithWarnThreshold](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/connectionscheck/check.go#L59>)
+
+```go
+func WithWarnThreshold(threshold float64) Option
+```
+
+WithWarnThreshold sets the warning threshold as a percentage \(0.0\-1.0\) of max connections.
 
 Generated by [gomarkdoc](<https://github.com/princjef/gomarkdoc>)

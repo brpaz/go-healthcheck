@@ -10,8 +10,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	"github.com/brpaz/go-healthcheck/checks"
-	"github.com/brpaz/go-healthcheck/checks/tcpcheck"
+	"github.com/brpaz/go-healthcheck/v2/checks"
+	"github.com/brpaz/go-healthcheck/v2/checks/tcpcheck"
 )
 
 // MockDialer is a mock implementation of the Dialer interface

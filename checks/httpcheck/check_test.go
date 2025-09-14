@@ -9,8 +9,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/brpaz/go-healthcheck/checks"
-	"github.com/brpaz/go-healthcheck/checks/httpcheck"
+	"github.com/brpaz/go-healthcheck/v2/checks"
+	"github.com/brpaz/go-healthcheck/v2/checks/httpcheck"
 )
 
 // customRoundTripper is a test helper that adds a custom header to requests

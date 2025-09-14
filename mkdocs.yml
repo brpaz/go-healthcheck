@@ -1,5 +1,5 @@
 site_name: Go Healthcheck
-repo_url: https://github.com/brpaz/go-healthcheck
+repo_url: https://github.com/brpaz/go-healthcheck/v2
 site_url: https://brpaz.github.io/go-healthcheck
 edit_uri: edit/master/docs/
 theme:

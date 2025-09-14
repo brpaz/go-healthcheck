@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/brpaz/go-healthcheck/checks"
+	"github.com/brpaz/go-healthcheck/v2/checks"
 )
 
 // HealthHttpResponse represents the structure of the health check HTTP response.

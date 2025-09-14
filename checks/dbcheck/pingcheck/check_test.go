@@ -9,8 +9,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	"github.com/brpaz/go-healthcheck/checks"
-	"github.com/brpaz/go-healthcheck/checks/dbcheck/pingcheck"
+	"github.com/brpaz/go-healthcheck/v2/checks"
+	"github.com/brpaz/go-healthcheck/v2/checks/dbcheck/pingcheck"
 )
 
 // MockDatabasePinger is a mock implementation of the database interface

@@ -5,7 +5,7 @@
 To install the library, use go get:
 
 ```bash
-go get github.com/brpaz/go-healthcheck
+go get github.com/brpaz/go-healthcheck/v2
 ```
 
 ## Basic Usage
@@ -16,8 +16,8 @@ The library provides a healthcheck service and an HTTP handler to expose the hea
 package main
 
 import (
-    "github.com/brpaz/go-healthcheck"
-    "github.com/brpaz/go-healthcheck/checks/httpcheck"
+    "github.com/brpaz/go-healthcheck/v2"
+    "github.com/brpaz/go-healthcheck/v2/checks/httpcheck"
     "net/http"
 )
 

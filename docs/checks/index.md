@@ -30,7 +30,7 @@ import (
     "os"
     "time"
 
-    "github.com/brpaz/go-healthcheck"
+    "github.com/brpaz/go-healthcheck/v2"
 )
 
 type FileExistsCheck struct {

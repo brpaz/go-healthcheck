@@ -21,6 +21,6 @@ This project uses conventional commit messages. Please follow the [Conventional 
 
 ## Issues
 
-If you encounter any issues or have suggestions for improvements, please open an [issue on GitHub](https://github.com/brpaz/go-healthcheck/issues).
+If you encounter any issues or have suggestions for improvements, please open an [issue on GitHub](https://github.com/brpaz/go-healthcheck/v2/issues).
 
 Thank you for your contributions!

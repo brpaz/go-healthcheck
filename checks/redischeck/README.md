@@ -3,7 +3,7 @@
 # redischeck
 
 ```go
-import "github.com/brpaz/go-healthcheck/checks/redischeck"
+import "github.com/brpaz/go-healthcheck/v2/checks/redischeck"
 ```
 
 Package redischeck provides simple Redis health checks. It verifies Redis connectivity and ping operations.

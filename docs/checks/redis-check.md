@@ -14,7 +14,7 @@ The Redis Check can be configured using the following options:
 
 ```go
 import (
-	"github.com/brpaz/go-healthcheck/checks/redischeck"
+	"github.com/brpaz/go-healthcheck/v2/checks/redischeck"
 )
 
 func main() {
