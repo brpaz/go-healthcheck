@@ -23,6 +23,6 @@ jobs:
       - name: Commit updated CHANGELOG file
         uses: stefanzweifel/git-auto-commit-action@v6
         with:
-          branch: main
+          branch: "master"
           commit_message: "chore(release): [skip-ci] ${{ github.event.release.tag_name }}"
           file_pattern: CHANGELOG.md
