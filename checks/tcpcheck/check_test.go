@@ -146,10 +146,8 @@ func TestTCPCheck_Run(t *testing.T) {
 		t.Parallel()
 
 		check := tcpcheck.New(tcpcheck.WithPort(8080))
-		results := check.Run(context.Background())
+		result := check.Run(context.Background())
 
-		assert.Len(t, results, 1)
-		result := results[0]
 		assert.Equal(t, checks.StatusFail, result.Status)
 		assert.Equal(t, "host is required", result.Output)
 		assert.Equal(t, "network", result.ComponentType)
@@ -162,10 +160,8 @@ func TestTCPCheck_Run(t *testing.T) {
 			tcpcheck.WithHost("localhost"),
 			tcpcheck.WithPort(0),
 		)
-		results := check.Run(context.Background())
+		result := check.Run(context.Background())
 
-		assert.Len(t, results, 1)
-		result := results[0]
 		assert.Equal(t, checks.StatusFail, result.Status)
 		assert.Contains(t, result.Output, "invalid port")
 	})
@@ -177,10 +173,8 @@ func TestTCPCheck_Run(t *testing.T) {
 			tcpcheck.WithHost("localhost"),
 			tcpcheck.WithPort(70000),
 		)
-		results := check.Run(context.Background())
+		result := check.Run(context.Background())
 
-		assert.Len(t, results, 1)
-		result := results[0]
 		assert.Equal(t, checks.StatusFail, result.Status)
 		assert.Contains(t, result.Output, "invalid port")
 	})
@@ -200,10 +194,8 @@ func TestTCPCheck_Run(t *testing.T) {
 			tcpcheck.WithDialer(mockDialer),
 		)
 
-		results := check.Run(context.Background())
+		result := check.Run(context.Background())
 
-		assert.Len(t, results, 1)
-		result := results[0]
 		assert.Equal(t, checks.StatusPass, result.Status)
 		assert.Equal(t, "network", result.ComponentType)
 		assert.Equal(t, "ms", result.ObservedUnit)
@@ -227,10 +219,8 @@ func TestTCPCheck_Run(t *testing.T) {
 			tcpcheck.WithDialer(mockDialer),
 		)
 
-		results := check.Run(context.Background())
+		result := check.Run(context.Background())
 
-		assert.Len(t, results, 1)
-		result := results[0]
 		assert.Equal(t, checks.StatusFail, result.Status)
 		assert.Contains(t, result.Output, "failed to connect")
 		assert.Contains(t, result.Output, "connection refused")
@@ -253,10 +243,8 @@ func TestTCPCheck_Run(t *testing.T) {
 			tcpcheck.WithDialer(mockDialer),
 		)
 
-		results := check.Run(context.Background())
+		result := check.Run(context.Background())
 
-		assert.Len(t, results, 1)
-		result := results[0]
 		assert.Equal(t, checks.StatusPass, result.Status)
 		assert.Contains(t, result.Output, "connection successful but failed to close")
 
@@ -279,10 +267,8 @@ func TestTCPCheck_Run(t *testing.T) {
 			tcpcheck.WithDialer(mockDialer),
 		)
 
-		results := check.Run(context.Background())
+		result := check.Run(context.Background())
 
-		assert.Len(t, results, 1)
-		result := results[0]
 		assert.Equal(t, checks.StatusFail, result.Status)
 		assert.Contains(t, result.Output, "failed to connect")
 
@@ -304,10 +290,8 @@ func TestTCPCheck_Run(t *testing.T) {
 			tcpcheck.WithDialer(mockDialer),
 		)
 
-		results := check.Run(ctx)
+		result := check.Run(ctx)
 
-		assert.Len(t, results, 1)
-		result := results[0]
 		assert.Equal(t, checks.StatusFail, result.Status)
 		assert.Contains(t, result.Output, "failed to connect")
 
@@ -371,8 +355,8 @@ func TestTCPCheck_Options(t *testing.T) {
 			tcpcheck.WithDialer(mockDialer),
 		)
 
-		results := check.Run(context.Background())
-		assert.Equal(t, checks.StatusFail, results[0].Status)
+		result := check.Run(context.Background())
+		assert.Equal(t, checks.StatusFail, result.Status)
 
 		mockDialer.AssertExpectations(t)
 	})
@@ -394,10 +378,8 @@ func TestTCPCheck_Options(t *testing.T) {
 			tcpcheck.WithDialer(mockDialer),
 		)
 
-		results := check.Run(context.Background())
+		result := check.Run(context.Background())
 
-		assert.Len(t, results, 1)
-		result := results[0]
 		assert.Equal(t, "service", result.ComponentType)
 		assert.Equal(t, "web-api", result.ComponentID)
 

@@ -62,7 +62,7 @@ func (d *DefaultFileSystemStater) Statfs(path string) (*DiskInfo, error) {
 // Check represents a disk space health check that monitors disk usage.
 type Check struct {
 	name          string
-	paths         []string
+	path          string
 	warnThreshold float64 // Percentage of disk usage that triggers warning
 	failThreshold float64 // Percentage of disk usage that triggers failure
 	componentType string
@@ -80,10 +80,10 @@ func WithName(name string) Option {
 	}
 }
 
-// WithPaths sets the paths to monitor, replacing any existing paths.
-func WithPaths(paths ...string) Option {
+// WithPath sets the paths to monitor, replacing any existing paths.
+func WithPath(path string) Option {
 	return func(c *Check) {
-		c.paths = paths
+		c.path = path
 	}
 }
 
@@ -126,7 +126,7 @@ func WithFileSystemStater(stater FileSystemStater) Option {
 func New(opts ...Option) *Check {
 	check := &Check{
 		name:          Name,
-		paths:         []string{"/"},
+		path:          "/",
 		warnThreshold: 80.0,
 		failThreshold: 90.0,
 		componentType: "system",
@@ -147,30 +147,19 @@ func (c *Check) GetName() string {
 }
 
 // Run executes the disk space health check and returns results for each monitored path.
-func (c *Check) Run(ctx context.Context) []checks.Result {
-	var results []checks.Result
-
-	for _, path := range c.paths {
-		result := c.checkPath(path)
-		results = append(results, result)
-	}
-
-	return results
-}
-
-// checkPath checks disk usage for a single path
-func (c *Check) checkPath(path string) checks.Result {
+// Note: This implementation temporarily returns only the first path check for RFC compliance.
+// TODO: Split into separate checks per path.
+func (c *Check) Run(ctx context.Context) checks.Result {
 	result := checks.Result{
 		Status:        checks.StatusPass,
 		Time:          time.Now(),
 		ComponentType: c.componentType,
-		ComponentID:   fmt.Sprintf("%s:%s", c.componentID, path),
 	}
 
-	diskInfo, err := c.stater.Statfs(path)
+	diskInfo, err := c.stater.Statfs(c.path)
 	if err != nil {
 		result.Status = checks.StatusFail
-		result.Output = fmt.Sprintf("failed to get disk stats for %s: %v", path, err)
+		result.Output = fmt.Sprintf("failed to get disk stats for %s: %v", c.path, err)
 		return result
 	}
 
@@ -180,16 +169,14 @@ func (c *Check) checkPath(path string) checks.Result {
 	// Check thresholds
 	if diskInfo.UsedPct >= c.failThreshold {
 		result.Status = checks.StatusFail
-		result.Output = fmt.Sprintf("disk usage critical on %s: %.1f%% used (threshold: %.1f%%)",
-			path, diskInfo.UsedPct, c.failThreshold)
+		result.Output = fmt.Sprintf("disk usage critical: %.1f%% used (threshold: %.1f%%)",
+			diskInfo.UsedPct, c.failThreshold)
 	} else if diskInfo.UsedPct >= c.warnThreshold {
 		result.Status = checks.StatusWarn
-		result.Output = fmt.Sprintf("disk usage high on %s: %.1f%% used (threshold: %.1f%%)",
-			path, diskInfo.UsedPct, c.warnThreshold)
+		result.Output = fmt.Sprintf("disk usage high: %.1f%% used (threshold: %.1f%%)",
+			diskInfo.UsedPct, c.warnThreshold)
 	} else {
 		result.Status = checks.StatusPass
-		result.Output = fmt.Sprintf("disk usage normal on %s: %.1f%% used (%.1f%% available)",
-			path, diskInfo.UsedPct, diskInfo.AvailPct)
 	}
 
 	return result
@@ -197,15 +184,9 @@ func (c *Check) checkPath(path string) checks.Result {
 
 // GetDiskInfo returns disk information for all monitored paths
 func (c *Check) GetDiskInfo() ([]*DiskInfo, error) {
-	var diskInfos []*DiskInfo
-
-	for _, path := range c.paths {
-		info, err := c.stater.Statfs(path)
-		if err != nil {
-			return nil, err
-		}
-		diskInfos = append(diskInfos, info)
+	info, err := c.stater.Statfs(c.path)
+	if err != nil {
+		return nil, err
 	}
-
-	return diskInfos, nil
+	return []*DiskInfo{info}, nil
 }

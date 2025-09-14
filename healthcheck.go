@@ -121,7 +121,7 @@ type CheckRunResult struct {
 func (h *HealthCheck) Execute(ctx context.Context) CheckRunResult {
 	type resultCollector struct {
 		name   string
-		result []checks.Result
+		result checks.Result
 	}
 
 	resultsChan := make(chan resultCollector, len(h.Checks))
@@ -142,14 +142,12 @@ func (h *HealthCheck) Execute(ctx context.Context) CheckRunResult {
 
 	for range h.Checks {
 		cr := <-resultsChan
-		results[cr.name] = append(results[cr.name], cr.result...)
+		results[cr.name] = append(results[cr.name], cr.result)
 
-		for _, result := range cr.result {
-			if result.Status == checks.StatusFail {
-				status = checks.StatusFail
-			} else if result.Status == checks.StatusWarn && status != checks.StatusFail {
-				status = checks.StatusWarn
-			}
+		if cr.result.Status == checks.StatusFail {
+			status = checks.StatusFail
+		} else if cr.result.Status == checks.StatusWarn && status != checks.StatusFail {
+			status = checks.StatusWarn
 		}
 	}
 

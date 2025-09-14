@@ -51,16 +51,16 @@ func (c *Check) GetName() string {
 }
 
 // Execute runs the mock check and returns a single check result based on the configured status.
-func (c *Check) Run(ctx context.Context) []checks.Result {
+func (c *Check) Run(ctx context.Context) checks.Result {
 	var output string
 	if c.status == checks.StatusFail {
 		output = CheckName + " check failed"
 	}
 
-	result := []checks.Result{{
+	result := checks.Result{
 		Status: c.status,
 		Output: output,
 		Time:   time.Now(),
-	}}
+	}
 	return result
 }

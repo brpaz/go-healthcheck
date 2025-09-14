@@ -43,10 +43,8 @@ func TestHTTPCheck_Run(t *testing.T) {
 			httpcheck.WithComponentType("http"),
 		)
 
-		results := check.Run(context.Background())
+		result := check.Run(context.Background())
 
-		assert.Len(t, results, 1)
-		result := results[0]
 		assert.Equal(t, checks.StatusPass, result.Status)
 		assert.Equal(t, "test-component", result.ComponentID)
 		assert.Equal(t, "http", result.ComponentType)
@@ -67,10 +65,8 @@ func TestHTTPCheck_Run(t *testing.T) {
 			httpcheck.WithURL(server.URL),
 		)
 
-		results := check.Run(context.Background())
+		result := check.Run(context.Background())
 
-		assert.Len(t, results, 1)
-		result := results[0]
 		assert.Equal(t, checks.StatusFail, result.Status)
 		assert.Contains(t, result.Output, "unexpected status code")
 	})
@@ -82,10 +78,8 @@ func TestHTTPCheck_Run(t *testing.T) {
 			httpcheck.WithName("test-check"),
 		)
 
-		results := check.Run(context.Background())
+		result := check.Run(context.Background())
 
-		assert.Len(t, results, 1)
-		result := results[0]
 		assert.Equal(t, checks.StatusFail, result.Status)
 		assert.Contains(t, result.Output, "URL is required for HTTP health check")
 	})
@@ -104,10 +98,8 @@ func TestHTTPCheck_Run(t *testing.T) {
 			httpcheck.WithExpectedStatus(201, 202),
 		)
 
-		results := check.Run(context.Background())
+		result := check.Run(context.Background())
 
-		assert.Len(t, results, 1)
-		result := results[0]
 		assert.Equal(t, checks.StatusPass, result.Status)
 	})
 
@@ -126,10 +118,8 @@ func TestHTTPCheck_Run(t *testing.T) {
 			httpcheck.WithTimeout(50*time.Millisecond), // Short timeout
 		)
 
-		results := check.Run(context.Background())
+		result := check.Run(context.Background())
 
-		assert.Len(t, results, 1)
-		result := results[0]
 		assert.Equal(t, checks.StatusFail, result.Status)
 		assert.Contains(t, result.Output, "failed to execute request")
 		assert.Contains(t, result.Output, "context deadline exceeded")
@@ -165,10 +155,8 @@ func TestHTTPCheck_Run(t *testing.T) {
 			httpcheck.WithHTTPClient(customClient),
 		)
 
-		results := check.Run(context.Background())
+		result := check.Run(context.Background())
 
-		assert.Len(t, results, 1)
-		result := results[0]
 		assert.Equal(t, checks.StatusPass, result.Status)
 		assert.Empty(t, result.Output) // Successful checks don't set output
 	})
@@ -194,10 +182,8 @@ func TestHTTPCheck_Run(t *testing.T) {
 			httpcheck.WithTimeout(1*time.Second), // This should be overridden by client timeout
 		)
 
-		results := check.Run(context.Background())
+		result := check.Run(context.Background())
 
-		assert.Len(t, results, 1)
-		result := results[0]
 		assert.Equal(t, checks.StatusFail, result.Status)
 		assert.Contains(t, result.Output, "failed to execute request")
 	})

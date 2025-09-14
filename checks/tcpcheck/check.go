@@ -135,7 +135,7 @@ func (c *Check) GetName() string {
 }
 
 // Run executes the TCP/UDP health check and returns the result.
-func (c *Check) Run(ctx context.Context) []checks.Result {
+func (c *Check) Run(ctx context.Context) checks.Result {
 	result := checks.Result{
 		Status:        checks.StatusPass,
 		Time:          time.Now(),
@@ -147,13 +147,13 @@ func (c *Check) Run(ctx context.Context) []checks.Result {
 	if c.host == "" {
 		result.Status = checks.StatusFail
 		result.Output = "host is required"
-		return []checks.Result{result}
+		return result
 	}
 
 	if c.port <= 0 || c.port > 65535 {
 		result.Status = checks.StatusFail
 		result.Output = fmt.Sprintf("invalid port: %d (must be 1-65535)", c.port)
-		return []checks.Result{result}
+		return result
 	}
 
 	// Create timeout context for the connection attempt
@@ -168,7 +168,7 @@ func (c *Check) Run(ctx context.Context) []checks.Result {
 	if err != nil {
 		result.Status = checks.StatusFail
 		result.Output = fmt.Sprintf("failed to connect to %s://%s: %v", c.network, address, err)
-		return []checks.Result{result}
+		return result
 	}
 
 	// Close connection immediately since we only need to verify connectivity
@@ -181,7 +181,7 @@ func (c *Check) Run(ctx context.Context) []checks.Result {
 	result.ObservedUnit = "ms"
 	result.ObservedValue = duration.Milliseconds()
 
-	return []checks.Result{result}
+	return result
 }
 
 // Address returns the full address string for this check

@@ -41,7 +41,7 @@ func TestDiskCheck_New(t *testing.T) {
 
 		check := diskcheck.New(
 			diskcheck.WithName("custom-disk-check"),
-			diskcheck.WithPaths("/var", "/tmp"),
+			diskcheck.WithPath("/var"),
 			diskcheck.WithWarnThreshold(70.0),
 			diskcheck.WithFailThreshold(85.0),
 			diskcheck.WithComponentType("storage"),
@@ -53,11 +53,11 @@ func TestDiskCheck_New(t *testing.T) {
 		assert.Equal(t, "custom-disk-check", check.GetName())
 	})
 
-	t.Run("creates check with multiple paths using WithPaths", func(t *testing.T) {
+	t.Run("creates check with single path", func(t *testing.T) {
 		t.Parallel()
 
 		check := diskcheck.New(
-			diskcheck.WithPaths("/", "/var", "/tmp"),
+			diskcheck.WithPath("/"),
 		)
 
 		assert.NotNil(t, check)
@@ -93,10 +93,8 @@ func TestDiskCheck_Run(t *testing.T) {
 		mockStater.On("Statfs", "/").Return(diskInfo, nil)
 
 		check := diskcheck.New(diskcheck.WithFileSystemStater(mockStater))
-		results := check.Run(context.Background())
+		result := check.Run(context.Background())
 
-		assert.Len(t, results, 1)
-		result := results[0]
 		assert.Equal(t, checks.StatusPass, result.Status)
 		assert.Contains(t, result.Output, "disk usage normal")
 		assert.Equal(t, "system", result.ComponentType)
@@ -125,10 +123,8 @@ func TestDiskCheck_Run(t *testing.T) {
 		mockStater.On("Statfs", "/").Return(diskInfo, nil)
 
 		check := diskcheck.New(diskcheck.WithFileSystemStater(mockStater))
-		results := check.Run(context.Background())
+		result := check.Run(context.Background())
 
-		assert.Len(t, results, 1)
-		result := results[0]
 		assert.Equal(t, checks.StatusWarn, result.Status)
 		assert.Contains(t, result.Output, "disk usage high")
 		assert.Equal(t, 85.0, result.ObservedValue)
@@ -154,10 +150,8 @@ func TestDiskCheck_Run(t *testing.T) {
 		mockStater.On("Statfs", "/").Return(diskInfo, nil)
 
 		check := diskcheck.New(diskcheck.WithFileSystemStater(mockStater))
-		results := check.Run(context.Background())
+		result := check.Run(context.Background())
 
-		assert.Len(t, results, 1)
-		result := results[0]
 		assert.Equal(t, checks.StatusFail, result.Status)
 		assert.Contains(t, result.Output, "disk usage critical")
 		assert.Equal(t, 95.0, result.ObservedValue)
@@ -174,10 +168,8 @@ func TestDiskCheck_Run(t *testing.T) {
 		mockStater.On("Statfs", "/").Return((*diskcheck.DiskInfo)(nil), statError)
 
 		check := diskcheck.New(diskcheck.WithFileSystemStater(mockStater))
-		results := check.Run(context.Background())
+		result := check.Run(context.Background())
 
-		assert.Len(t, results, 1)
-		result := results[0]
 		assert.Equal(t, checks.StatusFail, result.Status)
 		assert.Contains(t, result.Output, "failed to get disk stats")
 		assert.Contains(t, result.Output, "permission denied")
@@ -200,35 +192,18 @@ func TestDiskCheck_Run(t *testing.T) {
 			AvailPct: 50.0,
 		}
 
-		// Var filesystem - high usage (warning)
-		varInfo := &diskcheck.DiskInfo{
-			Path:     "/var",
-			Total:    500000000,
-			Free:     75000000,
-			Used:     425000000,
-			UsedPct:  85.0,
-			AvailPct: 15.0,
-		}
-
 		mockStater.On("Statfs", "/").Return(rootInfo, nil)
-		mockStater.On("Statfs", "/var").Return(varInfo, nil)
 
 		check := diskcheck.New(
-			diskcheck.WithPaths("/", "/var"),
+			diskcheck.WithPath("/"),
 			diskcheck.WithFileSystemStater(mockStater),
 		)
 
-		results := check.Run(context.Background())
+		result := check.Run(context.Background())
 
-		assert.Len(t, results, 2)
-
-		// First result should be for root (pass)
-		assert.Equal(t, checks.StatusPass, results[0].Status)
-		assert.Equal(t, "disk:/", results[0].ComponentID)
-
-		// Second result should be for var (warn)
-		assert.Equal(t, checks.StatusWarn, results[1].Status)
-		assert.Equal(t, "disk:/var", results[1].ComponentID)
+		// Should check only the first path now
+		assert.Equal(t, checks.StatusPass, result.Status)
+		assert.Equal(t, "disk:/", result.ComponentID)
 
 		mockStater.AssertExpectations(t)
 	})
@@ -260,10 +235,8 @@ func TestDiskCheck_CustomThresholds(t *testing.T) {
 			diskcheck.WithFileSystemStater(mockStater),
 		)
 
-		results := check.Run(context.Background())
+		result := check.Run(context.Background())
 
-		assert.Len(t, results, 1)
-		result := results[0]
 		assert.Equal(t, checks.StatusWarn, result.Status) // Should warn at 75% with 70% threshold
 		assert.Contains(t, result.Output, "threshold: 70.0%")
 
@@ -288,29 +261,18 @@ func TestDiskCheck_GetDiskInfo(t *testing.T) {
 			AvailPct: 50.0,
 		}
 
-		varInfo := &diskcheck.DiskInfo{
-			Path:     "/var",
-			Total:    500000000,
-			Free:     250000000,
-			Used:     250000000,
-			UsedPct:  50.0,
-			AvailPct: 50.0,
-		}
-
 		mockStater.On("Statfs", "/").Return(rootInfo, nil)
-		mockStater.On("Statfs", "/var").Return(varInfo, nil)
 
 		check := diskcheck.New(
-			diskcheck.WithPaths("/", "/var"),
+			diskcheck.WithPath("/"),
 			diskcheck.WithFileSystemStater(mockStater),
 		)
 
 		infos, err := check.GetDiskInfo()
 
 		assert.NoError(t, err)
-		assert.Len(t, infos, 2)
+		assert.Len(t, infos, 1)
 		assert.Equal(t, "/", infos[0].Path)
-		assert.Equal(t, "/var", infos[1].Path)
 
 		mockStater.AssertExpectations(t)
 	})
@@ -405,10 +367,8 @@ func TestDiskCheck_Run_ThresholdScenarios(t *testing.T) {
 				diskcheck.WithFileSystemStater(mockStater),
 			)
 
-			results := check.Run(context.Background())
+			result := check.Run(context.Background())
 
-			assert.Len(t, results, 1)
-			result := results[0]
 			assert.Equal(t, tt.expectedStatus, result.Status)
 			assert.Contains(t, result.Output, tt.expectedContains)
 			assert.Equal(t, tt.usedPct, result.ObservedValue)

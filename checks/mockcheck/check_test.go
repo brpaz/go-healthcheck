@@ -36,9 +36,8 @@ func TestMockCheck_Execute(t *testing.T) {
 			mockcheck.WithName("test"),
 			mockcheck.WithStatus(checks.StatusPass),
 		)
-		results := check.Run(context.Background())
-		assert.Len(t, results, 1)
-		assert.Equal(t, checks.StatusPass, results[0].Status)
+		result := check.Run(context.Background())
+		assert.Equal(t, checks.StatusPass, result.Status)
 		assert.Equal(t, "test", check.GetName())
 	})
 
@@ -48,10 +47,9 @@ func TestMockCheck_Execute(t *testing.T) {
 			mockcheck.WithName("fail"),
 			mockcheck.WithStatus(checks.StatusFail),
 		)
-		results := check.Run(context.Background())
-		assert.Len(t, results, 1)
-		assert.Equal(t, checks.StatusFail, results[0].Status)
-		assert.Equal(t, "mock check failed", results[0].Output)
+		result := check.Run(context.Background())
+		assert.Equal(t, checks.StatusFail, result.Status)
+		assert.Equal(t, "mock check failed", result.Output)
 		assert.Equal(t, "fail", check.GetName())
 	})
 }

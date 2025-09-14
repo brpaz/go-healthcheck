@@ -73,10 +73,8 @@ func TestRedisCheck_Run(t *testing.T) {
 		t.Parallel()
 
 		check := redischeck.New()
-		results := check.Run(context.Background())
+		result := check.Run(context.Background())
 
-		assert.Len(t, results, 1)
-		result := results[0]
 		assert.Equal(t, checks.StatusFail, result.Status)
 		assert.Equal(t, "Redis client is required", result.Output)
 		assert.Equal(t, "datastore", result.ComponentType)
@@ -90,10 +88,8 @@ func TestRedisCheck_Run(t *testing.T) {
 		mockClient.On("Ping", mock.Anything).Return(nil)
 
 		check := redischeck.New(redischeck.WithClient(mockClient))
-		results := check.Run(context.Background())
+		result := check.Run(context.Background())
 
-		assert.Len(t, results, 1)
-		result := results[0]
 		assert.Equal(t, checks.StatusPass, result.Status)
 		assert.Equal(t, "datastore", result.ComponentType)
 		assert.Equal(t, "redis", result.ComponentID)
@@ -111,10 +107,8 @@ func TestRedisCheck_Run(t *testing.T) {
 		mockClient.On("Ping", mock.Anything).Return(pingError)
 
 		check := redischeck.New(redischeck.WithClient(mockClient))
-		results := check.Run(context.Background())
+		result := check.Run(context.Background())
 
-		assert.Len(t, results, 1)
-		result := results[0]
 		assert.Equal(t, checks.StatusFail, result.Status)
 		assert.Contains(t, result.Output, "Redis ping failed")
 		assert.Contains(t, result.Output, "connection refused")
@@ -134,10 +128,8 @@ func TestRedisCheck_Run(t *testing.T) {
 			redischeck.WithTimeout(1*time.Millisecond),
 		)
 
-		results := check.Run(context.Background())
+		result := check.Run(context.Background())
 
-		assert.Len(t, results, 1)
-		result := results[0]
 		assert.Equal(t, checks.StatusFail, result.Status)
 		assert.Contains(t, result.Output, "Redis ping failed")
 
@@ -154,10 +146,8 @@ func TestRedisCheck_Run(t *testing.T) {
 		mockClient.On("Ping", mock.Anything).Return(context.Canceled)
 
 		check := redischeck.New(redischeck.WithClient(mockClient))
-		results := check.Run(ctx)
+		result := check.Run(ctx)
 
-		assert.Len(t, results, 1)
-		result := results[0]
 		assert.Equal(t, checks.StatusFail, result.Status)
 		assert.Contains(t, result.Output, "Redis ping failed")
 

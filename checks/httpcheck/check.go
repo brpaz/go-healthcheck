@@ -101,16 +101,16 @@ func (c *Check) GetName() string {
 }
 
 // Run executes the HTTP health check and returns the result.
-func (c *Check) Run(ctx context.Context) []checks.Result {
+func (c *Check) Run(ctx context.Context) checks.Result {
 	// Validate configuration
 	if c.url == "" {
-		return []checks.Result{{
+		return checks.Result{
 			Status:        checks.StatusFail,
 			Output:        "URL is required for HTTP health check",
 			Time:          time.Now(),
 			ComponentType: c.componentType,
 			ComponentID:   c.componentID,
-		}}
+		}
 	}
 
 	result := checks.Result{
@@ -128,7 +128,7 @@ func (c *Check) Run(ctx context.Context) []checks.Result {
 	if err != nil {
 		result.Output = "failed to create request: " + err.Error()
 		result.Status = checks.StatusFail
-		return []checks.Result{result}
+		return result
 	}
 
 	startTime := time.Now()
@@ -136,7 +136,7 @@ func (c *Check) Run(ctx context.Context) []checks.Result {
 	if err != nil {
 		result.Output = "failed to execute request: " + err.Error()
 		result.Status = checks.StatusFail
-		return []checks.Result{result}
+		return result
 	}
 	defer func() {
 		_ = resp.Body.Close()
@@ -154,7 +154,7 @@ func (c *Check) Run(ctx context.Context) []checks.Result {
 		result.Output = "unexpected status code: " + resp.Status
 	}
 
-	return []checks.Result{result}
+	return result
 }
 
 // isExpectedStatusCode determines if the given status code indicates success.
