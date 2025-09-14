@@ -1,5 +1,5 @@
-// Package dbcheck provides database related health checks.
-package dbcheck
+// Package pingcheck provides database ping health check implementation.
+package pingcheck
 
 import (
 	"context"
@@ -12,14 +12,14 @@ const (
 	defaultTimeout = 5 * time.Second
 )
 
-type database interface {
+type DatabasePinger interface {
 	PingContext(ctx context.Context) error
 }
 
 // PingCheck represents a SQL database Ping health check that verifies Ping through ping operations.
 type PingCheck struct {
 	name    string
-	db      database
+	db      DatabasePinger
 	timeout time.Duration
 }
 
@@ -34,7 +34,7 @@ func WithPingName(name string) PingCheckOption {
 }
 
 // WithPingDB sets the database connection to use for the health check.
-func WithPingDB(db database) PingCheckOption {
+func WithPingDB(db DatabasePinger) PingCheckOption {
 	return func(c *PingCheck) {
 		c.db = db
 	}
@@ -47,8 +47,8 @@ func WithPingTimeout(timeout time.Duration) PingCheckOption {
 	}
 }
 
-// NewPingCheck creates a new SQL Ping Check instance with optional configuration.
-func NewPingCheck(opts ...PingCheckOption) *PingCheck {
+// New creates a new SQL Ping Check instance with optional configuration.
+func New(opts ...PingCheckOption) *PingCheck {
 	check := &PingCheck{
 		name:    "sql-check",
 		db:      nil,

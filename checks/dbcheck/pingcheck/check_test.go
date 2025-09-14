@@ -1,4 +1,4 @@
-package dbcheck_test
+package pingcheck_test
 
 import (
 	"context"
@@ -10,20 +10,20 @@ import (
 	"github.com/stretchr/testify/mock"
 
 	"github.com/brpaz/go-healthcheck/checks"
-	"github.com/brpaz/go-healthcheck/checks/dbcheck"
+	"github.com/brpaz/go-healthcheck/checks/dbcheck/pingcheck"
 )
 
-// MockDatabase is a mock implementation of the database interface
-type MockDatabase struct {
+// MockDatabasePinger is a mock implementation of the database interface
+type MockDatabasePinger struct {
 	mock.Mock
 }
 
-func (m *MockDatabase) PingContext(ctx context.Context) error {
+func (m *MockDatabasePinger) PingContext(ctx context.Context) error {
 	args := m.Called(ctx)
 	return args.Error(0)
 }
 
-func (m *MockDatabase) Stats() sql.DBStats {
+func (m *MockDatabasePinger) Stats() sql.DBStats {
 	args := m.Called()
 	return args.Get(0).(sql.DBStats)
 }
@@ -34,12 +34,12 @@ func TestPingCheck_Run(t *testing.T) {
 	t.Run("check succeeds when ping succeeds", func(t *testing.T) {
 		t.Parallel()
 
-		mockDB := &MockDatabase{}
+		mockDB := &MockDatabasePinger{}
 		mockDB.On("PingContext", mock.Anything).Return(nil)
 
-		check := dbcheck.NewPingCheck(
-			dbcheck.WithPingName("test-db-check"),
-			dbcheck.WithPingDB(mockDB),
+		check := pingcheck.New(
+			pingcheck.WithPingName("test-db-check"),
+			pingcheck.WithPingDB(mockDB),
 		)
 
 		result := check.Run(context.Background())
@@ -52,12 +52,12 @@ func TestPingCheck_Run(t *testing.T) {
 	t.Run("check fails when ping fails", func(t *testing.T) {
 		t.Parallel()
 
-		mockDB := &MockDatabase{}
+		mockDB := &MockDatabasePinger{}
 		mockDB.On("PingContext", mock.Anything).Return(errors.New("connection failed"))
 
-		check := dbcheck.NewPingCheck(
-			dbcheck.WithPingName("test-db-check"),
-			dbcheck.WithPingDB(mockDB),
+		check := pingcheck.New(
+			pingcheck.WithPingName("test-db-check"),
+			pingcheck.WithPingDB(mockDB),
 		)
 
 		result := check.Run(context.Background())

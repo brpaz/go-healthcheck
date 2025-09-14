@@ -1,140 +1,76 @@
 ## DB Check
 
-The DB Check verifies that a SQL database is reachable. This is useful for monitoring the availability of SQL databases such as MySQL, PostgreSQL, SQLite, and others.
+The DB Check provides checks to monitor the health of a SQL database connection. It can perform a simple ping to verify connectivity and monitor database connection pool metrics.
+
+## Available Checks
+
+### Ping Check
+
+The Ping Check verifies that a connection to the database can be established by performing a ping operation. This is useful for monitoring the general availability of the database.
+
+### Connections Check
+
+The Connections Check monitors the number of open database connections against configured thresholds. It automatically detects the maximum connection limit from the database settings.
 
 ## Configuration
 
-The DB Check can be configured using the following options:
+### Ping Check
+
+The Ping Check can be configured using the following options:
+
+- `WithPingName(name string)`: Sets the name of the check.
+- `WithPingDB(db DatabasePinger)`: Sets the database connection to be used for the check.
+- `WithPingTimeout(timeout time.Duration)`: Sets the timeout for the ping operation (default is 5 seconds).
+
+### Connections Check
+
+The Connections Check can be configured using the following options:
 
 - `WithName(name string)`: Sets the name of the check.
-- `WithDB(db *sql.DB)`: Sets the database connection to be used for the check.
-- `WithTimeout(timeout time.Duration)`: Sets the timeout for the ping operation (default is 5 seconds).
-- `WithMetrics(includeMetrics bool)`: Enables collection of database connection pool metrics (default is false).
+- `WithDB(db DatabaseStatsProvider)`: Sets the database connection to be used for the check.
+- `WithTimeout(timeout time.Duration)`: Sets the timeout for the check operation (default is 5 seconds).
+- `WithWarnThreshold(threshold float64)`: Sets the warning threshold as a percentage (0.0-1.0) of max connections (default is 0.8).
+- `WithFailThreshold(threshold float64)`: Sets the failure threshold as a percentage (0.0-1.0) of max connections (default is 0.9).
 
-## Connection Pool Metrics
-
-When metrics are enabled with `WithMetrics(true)`, the health check will return separate sub-checks for each connection pool metric, allowing for granular monitoring and alerting:
-
-- **`sql-check:open-connections`**: Current number of established connections
-- **`sql-check:in-use-connections`**: Number of connections currently being used
-- **`sql-check:idle-connections`**: Number of idle connections available
-- **`sql-check:max-open-connections`**: Maximum number of open connections allowed
-- **`sql-check:wait-count`**: Total number of times a connection was waited for
-- **`sql-check:wait-duration`**: Total time spent waiting for connections
-
-Each metric has its own `ObservedValue` and `ObservedUnit`, making it easy to set up monitoring dashboards and alerts on specific thresholds (e.g., alert when idle connections drop below 2, or when wait count increases rapidly).
-
-**Note:** Connection count metrics use empty `observedUnit` since counts are dimensionless. Only time-based metrics like `wait-duration` and `sql-check` (ping time) use units like "ms".
-
-## Example
+### Example Usage
 
 ```go
 package main
 
 import (
-    "database/sql"
-    "time"
-    "github.com/brpaz/go-healthcheck"
-    "github.com/brpaz/go-healthcheck/checks/dbcheck"
-    _ "github.com/go-sql-driver/mysql" // Import the MySQL driver
+  "database/sql"
+  "net/http"
+  "time"
+
+  _ "github.com/lib/pq" // Import the PostgreSQL driver
+
+  "github.com/brpaz/go-healthcheck/checks/dbcheck/connectionscheck"
 )
 
 func main() {
-    // Open a database connection
-    db, err := sql.Open("mysql", "user:password@tcp(localhost:3306)/dbname")
-    if err != nil {
-        panic(err)
-    }
-    defer db.Close()
-
-    // Create a basic health check
-    basicCheck := dbcheck.New(
-        dbcheck.WithDB(db),
-        dbcheck.WithTimeout(2 * time.Second),
-    )
-
-    // Create a health check with metrics enabled
-    metricsCheck := dbcheck.New(
-        dbcheck.WithDB(db),
-        dbcheck.WithTimeout(2 * time.Second),
-        dbcheck.WithMetrics(true), // Enable connection pool metrics
-    )
-
-    // Use the checks...
-}
-```
-
-## Sample Output
-
-**Basic check output (1 result):**
-```json
-{
-  "status": "pass",
-  "output": "",
-  "observedValue": 1,
-  "observedUnit": "ms"
-}
-```
-
-**With metrics enabled (7 results):**
-```json
-[
-  {
-    "status": "pass",
-    "output": "",
-    "observedValue": 1,
-    "observedUnit": "ms"
-  },
-  {
-    "status": "pass",
-    "output": "",
-    "observedValue": 5,
-    "observedUnit": ""
-  },
-  {
-    "status": "pass",
-    "output": "",
-    "observedValue": 2,
-    "observedUnit": ""
-  },
-  {
-    "status": "pass",
-    "output": "",
-    "observedValue": 3,
-    "observedUnit": ""
-  },
-  {
-    "status": "pass",
-    "output": "",
-    "observedValue": 25,
-    "observedUnit": ""
-  },
-  {
-    "status": "pass",
-    "output": "",
-    "observedValue": 10,
-    "observedUnit": ""
-  },
-  {
-    "status": "pass",
-    "output": "",
-    "observedValue": 15,
-    "observedUnit": "ms"
+  // Initialize the database connection
+  db, err := sql.Open("postgres", "user=youruser dbname=yourdb sslmode=disable")
+  if err != nil {
+    panic(err)
   }
-]
+  defer db.Close()
+
+  // Configure connection pool
+  db.SetMaxOpenConns(100)
+  db.SetMaxIdleConns(10)
+
+  // Create a new Connections Check
+  dbConnectionsCheck := connectionscheck.New(
+    connectionscheck.WithName("postgres-connections"),
+    connectionscheck.WithDB(db),
+    connectionscheck.WithWarnThreshold(0.8),
+    connectionscheck.WithFailThreshold(0.95),
+  )
+
+  // Create health checker with both checks
+  checker := healthcheck.New(
+    healthcheck.WithChecks(dbConnectionsCheck),
+  )
+}
 ```
 
-## Monitoring Use Cases
-
-The separate metric sub-checks enable advanced monitoring scenarios:
-
-**Alerting Examples:**
-- Alert when `idle-connections` < 2 (connection pool exhaustion risk)
-- Alert when `wait-count` increases by > 100 over 5 minutes (connection contention)
-- Alert when `wait-duration` > 1000ms (slow connection acquisition)
-- Alert when `in-use-connections` / `max-open-connections` > 0.8 (high utilization)
-
-**Dashboard Metrics:**
-- Graph `open-connections` over time to see connection usage patterns
-- Monitor `wait-duration` trends to identify performance degradation
-- Track `idle-connections` to optimize pool sizing

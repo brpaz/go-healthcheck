@@ -25,8 +25,8 @@ import (
 
 func main() {
     check := diskcheck.New(
-        diskcheck.WithName("My Disk Check"),
-        diskcheck.WithPaths("/", "/var", "/home"),
+        diskcheck.WithName("disk:root"),
+        diskcheck.WithPath("/"),
         diskcheck.WithWarnThreshold(75.0),
         diskcheck.WithFailThreshold(90.0),
     )

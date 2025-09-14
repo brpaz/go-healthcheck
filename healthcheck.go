@@ -7,7 +7,8 @@
 //
 // import "net/http"
 // import "github.com/brpaz/go-healthcheck"
-// import "github.com/brpaz/go-healthcheck/pkg/checks/mockcheck"
+// import healthHandler "github.com/brpaz/go-healthcheck/handler"
+// import "github.com/brpaz/go-healthcheck/checks/mockcheck"
 //
 //	func main() {
 //	    mycheck := mockcheck.New(
@@ -21,7 +22,7 @@
 //			healthcheck.WithCheck(mycheck),
 //		)
 //
-//		http.HandleFunc("/health", healthcheck.Handler(hc))
+//		http.HandleFunc("/health", healthHandler.HealthHandler(hc))
 //		http.ListenAndServe(":8080", nil)
 //	}
 package healthcheck
