@@ -3,7 +3,7 @@
 # pingcheck
 
 ```go
-import "github.com/brpaz/go-healthcheck/checks/dbcheck/pingcheck"
+import "github.com/brpaz/go-healthcheck/v2/checks/dbcheck/pingcheck"
 ```
 
 Package pingcheck provides database ping health check implementation.
@@ -11,20 +11,20 @@ Package pingcheck provides database ping health check implementation.
 ## Index
 
 - [type DatabasePinger](<#DatabasePinger>)
+- [type Option](<#Option>)
+  - [func WithPingDB\(db DatabasePinger\) Option](<#WithPingDB>)
+  - [func WithPingName\(name string\) Option](<#WithPingName>)
+  - [func WithPingTimeout\(timeout time.Duration\) Option](<#WithPingTimeout>)
 - [type PingCheck](<#PingCheck>)
-  - [func New\(opts ...PingCheckOption\) \*PingCheck](<#New>)
+  - [func New\(opts ...Option\) \*PingCheck](<#New>)
   - [func \(c \*PingCheck\) GetName\(\) string](<#PingCheck.GetName>)
   - [func \(c \*PingCheck\) Run\(ctx context.Context\) checks.Result](<#PingCheck.Run>)
-- [type PingCheckOption](<#PingCheckOption>)
-  - [func WithPingDB\(db DatabasePinger\) PingCheckOption](<#WithPingDB>)
-  - [func WithPingName\(name string\) PingCheckOption](<#WithPingName>)
-  - [func WithPingTimeout\(timeout time.Duration\) PingCheckOption](<#WithPingTimeout>)
 
 
 <a name="DatabasePinger"></a>
-## type [DatabasePinger](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/pingcheck/check.go#L15-L17>)
+## type [DatabasePinger](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/pingcheck/check.go#L16-L18>)
 
-
+DatabasePinger interface for database instances that support pinging.
 
 ```go
 type DatabasePinger interface {
@@ -32,8 +32,44 @@ type DatabasePinger interface {
 }
 ```
 
+<a name="Option"></a>
+## type [Option](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/pingcheck/check.go#L28>)
+
+Option is a functional option for configuring PingCheck.
+
+```go
+type Option func(*PingCheck)
+```
+
+<a name="WithPingDB"></a>
+### func [WithPingDB](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/pingcheck/check.go#L38>)
+
+```go
+func WithPingDB(db DatabasePinger) Option
+```
+
+WithPingDB sets the database connection to use for the health check.
+
+<a name="WithPingName"></a>
+### func [WithPingName](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/pingcheck/check.go#L31>)
+
+```go
+func WithPingName(name string) Option
+```
+
+WithPingName sets the name of the Ping check.
+
+<a name="WithPingTimeout"></a>
+### func [WithPingTimeout](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/pingcheck/check.go#L45>)
+
+```go
+func WithPingTimeout(timeout time.Duration) Option
+```
+
+WithPingTimeout sets the timeout for the database ping operation.
+
 <a name="PingCheck"></a>
-## type [PingCheck](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/pingcheck/check.go#L20-L24>)
+## type [PingCheck](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/pingcheck/check.go#L21-L25>)
 
 PingCheck represents a SQL database Ping health check that verifies Ping through ping operations.
 
@@ -44,16 +80,16 @@ type PingCheck struct {
 ```
 
 <a name="New"></a>
-### func [New](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/pingcheck/check.go#L51>)
+### func [New](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/pingcheck/check.go#L52>)
 
 ```go
-func New(opts ...PingCheckOption) *PingCheck
+func New(opts ...Option) *PingCheck
 ```
 
 New creates a new SQL Ping Check instance with optional configuration.
 
 <a name="PingCheck.GetName"></a>
-### func \(\*PingCheck\) [GetName](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/pingcheck/check.go#L66>)
+### func \(\*PingCheck\) [GetName](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/pingcheck/check.go#L67>)
 
 ```go
 func (c *PingCheck) GetName() string
@@ -62,48 +98,12 @@ func (c *PingCheck) GetName() string
 GetName returns the name of the check.
 
 <a name="PingCheck.Run"></a>
-### func \(\*PingCheck\) [Run](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/pingcheck/check.go#L71>)
+### func \(\*PingCheck\) [Run](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/pingcheck/check.go#L72>)
 
 ```go
 func (c *PingCheck) Run(ctx context.Context) checks.Result
 ```
 
 Run executes the SQL Ping health check and returns the result.
-
-<a name="PingCheckOption"></a>
-## type [PingCheckOption](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/pingcheck/check.go#L27>)
-
-PingCheckOption is a functional option for configuring PingCheck.
-
-```go
-type PingCheckOption func(*PingCheck)
-```
-
-<a name="WithPingDB"></a>
-### func [WithPingDB](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/pingcheck/check.go#L37>)
-
-```go
-func WithPingDB(db DatabasePinger) PingCheckOption
-```
-
-WithPingDB sets the database connection to use for the health check.
-
-<a name="WithPingName"></a>
-### func [WithPingName](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/pingcheck/check.go#L30>)
-
-```go
-func WithPingName(name string) PingCheckOption
-```
-
-WithPingName sets the name of the Ping check.
-
-<a name="WithPingTimeout"></a>
-### func [WithPingTimeout](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/pingcheck/check.go#L44>)
-
-```go
-func WithPingTimeout(timeout time.Duration) PingCheckOption
-```
-
-WithPingTimeout sets the timeout for the database ping operation.
 
 Generated by [gomarkdoc](<https://github.com/princjef/gomarkdoc>)

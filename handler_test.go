@@ -8,9 +8,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/brpaz/go-healthcheck"
-	"github.com/brpaz/go-healthcheck/checks"
-	"github.com/brpaz/go-healthcheck/checks/mockcheck"
+	"github.com/brpaz/go-healthcheck/v2"
+	"github.com/brpaz/go-healthcheck/v2/checks"
+	"github.com/brpaz/go-healthcheck/v2/checks/mockcheck"
 )
 
 var (

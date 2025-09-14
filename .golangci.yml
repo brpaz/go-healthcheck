@@ -15,7 +15,7 @@ formatters:
       sections:
         - standard
         - default
-        - prefix(github.com/brpaz/go-healthcheck)
+        - prefix(github.com/brpaz/go-healthcheck/v2)
   exclusions:
     generated: lax
     paths:

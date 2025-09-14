@@ -3,7 +3,7 @@
 # mockcheck
 
 ```go
-import "github.com/brpaz/go-healthcheck/checks/mockcheck"
+import "github.com/brpaz/go-healthcheck/v2/checks/mockcheck"
 ```
 
 ## Index

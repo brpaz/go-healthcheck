@@ -44,7 +44,7 @@ import (
 
   _ "github.com/lib/pq" // Import the PostgreSQL driver
 
-  "github.com/brpaz/go-healthcheck/checks/dbcheck/connectionscheck"
+  "github.com/brpaz/go-healthcheck/v2/checks/dbcheck/connectionscheck"
 )
 
 func main() {

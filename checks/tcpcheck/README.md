@@ -3,7 +3,7 @@
 # tcpcheck
 
 ```go
-import "github.com/brpaz/go-healthcheck/checks/tcpcheck"
+import "github.com/brpaz/go-healthcheck/v2/checks/tcpcheck"
 ```
 
 Package tcpcheck provides TCP/UDP port connectivity health checks. It verifies that specific network ports are open and accepting connections.

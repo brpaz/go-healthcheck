@@ -6,8 +6,8 @@
 // package main
 //
 // import "net/http"
-// import "github.com/brpaz/go-healthcheck"
-// import "github.com/brpaz/go-healthcheck/checks/mockcheck"
+// import "github.com/brpaz/go-healthcheck/v2"
+// import "github.com/brpaz/go-healthcheck/v2/checks/mockcheck"
 //
 //	func main() {
 //	    mycheck := mockcheck.New(
@@ -29,7 +29,7 @@ package healthcheck
 import (
 	"context"
 
-	"github.com/brpaz/go-healthcheck/checks"
+	"github.com/brpaz/go-healthcheck/v2/checks"
 )
 
 type HealthChecker interface {

@@ -3,7 +3,7 @@
 # httpcheck
 
 ```go
-import "github.com/brpaz/go-healthcheck/checks/httpcheck"
+import "github.com/brpaz/go-healthcheck/v2/checks/httpcheck"
 ```
 
 Package httpcheck provides HTTP url health checks. It requests HTTP urls and verifies their availability based on status codes and response times.

@@ -8,7 +8,7 @@ import (
 	"slices"
 	"time"
 
-	"github.com/brpaz/go-healthcheck/checks"
+	"github.com/brpaz/go-healthcheck/v2/checks"
 )
 
 const defaultTimeout = 5 * time.Second

@@ -3,7 +3,7 @@
 # checks
 
 ```go
-import "github.com/brpaz/go-healthcheck/checks"
+import "github.com/brpaz/go-healthcheck/v2/checks"
 ```
 
 ## Index

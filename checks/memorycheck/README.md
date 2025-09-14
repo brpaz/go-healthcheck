@@ -3,7 +3,7 @@
 # memorycheck
 
 ```go
-import "github.com/brpaz/go-healthcheck/checks/memorycheck"
+import "github.com/brpaz/go-healthcheck/v2/checks/memorycheck"
 ```
 
 Package memorycheck provides system memory monitoring health checks for Linux systems.

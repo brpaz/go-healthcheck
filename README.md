@@ -6,7 +6,7 @@
 <div align="center">
 
 ![Go version](https://img.shields.io/github/go-mod/go-version/brpaz/go-healthcheck?style=for-the-badge)
-[![Go Report Card](https://goreportcard.com/badge/github.com/brpaz/go-healthcheck?style=for-the-badge)](https://goreportcard.com/report/github.com/brpaz/go-healthcheck)
+[![Go Report Card](https://goreportcard.com/badge/github.com/brpaz/go-healthcheck/v2?style=for-the-badge)](https://goreportcard.com/report/github.com/brpaz/go-healthcheck/v2)
 [![CI status](https://img.shields.io/github/actions/workflow/status/brpaz/go-healthcheck/ci.yml?style=for-the-badge)](https://github.com/brpaz/go-healthcheck/actions/workflows/ci.yml)
 [![Coverage Status](https://img.shields.io/codecov/c/github/brpaz/go-healthcheck?style=for-the-badge)](https://codecov.io/gh/brpaz/go-healthcheck)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
@@ -26,7 +26,7 @@
 ### Installation
 
 ```bash
-go get -u github.com/brpaz/go-healthcheck
+go get -u github.com/brpaz/go-healthcheck/v2
 ```
 
 ### Basic Usage
@@ -39,8 +39,8 @@ package main
 import (
   "net/http"
 
-  "github.com/brpaz/go-healthcheck"
-  "github.com/brpaz/go-healthcheck/checks/mockcheck"
+  "github.com/brpaz/go-healthcheck/v2"
+  "github.com/brpaz/go-healthcheck/v2/checks/mockcheck"
 )
 
 func main() {

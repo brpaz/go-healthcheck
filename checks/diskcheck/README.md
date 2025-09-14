@@ -3,7 +3,7 @@
 # diskcheck
 
 ```go
-import "github.com/brpaz/go-healthcheck/checks/diskcheck"
+import "github.com/brpaz/go-healthcheck/v2/checks/diskcheck"
 ```
 
 Package diskcheck provides disk space monitoring health checks. It monitors disk usage and alerts when thresholds are exceeded.

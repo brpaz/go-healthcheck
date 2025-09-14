@@ -3,14 +3,14 @@
 # healthcheck
 
 ```go
-import "github.com/brpaz/go-healthcheck"
+import "github.com/brpaz/go-healthcheck/v2"
 ```
 
 Package healthcheck provides a library for creating health check endpoints. It includes various built\-in checks and new ones can be added easily. It tooks inspiration from https://inadarei.github.io/rfc-healthcheck/ for the response structure. Example Usage:
 
 package main
 
-import "net/http" import "github.com/brpaz/go\-healthcheck" import "github.com/brpaz/go\-healthcheck/checks/mockcheck"
+import "net/http" import "github.com/brpaz/go\-healthcheck/v2" import "github.com/brpaz/go\-healthcheck/v2/checks/mockcheck"
 
 ```
 func main() {

@@ -17,8 +17,8 @@ The Memory Check can be configured using the following options:
 package main
 
 import (
-    "github.com/brpaz/go-healthcheck"
-    "github.com/brpaz/go-healthcheck/checks/memorycheck"
+    "github.com/brpaz/go-healthcheck/v2"
+    "github.com/brpaz/go-healthcheck/v2/checks/memorycheck"
 )
 
 func main() {
