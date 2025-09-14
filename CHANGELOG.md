@@ -1,5 +1,14 @@
 # Changelog
 
+## v2.2.0 - 2025-09-14
+
+### What's Changed
+
+#### 🚀 Features
+
+- feat: reorganize some checks @brpaz (#12)
+  **Full Changelog**: [https://github.com/brpaz/go-healthcheck/compare/v2.1.0...v2.2.0](https://github.com/brpaz/go-healthcheck/compare/v2.1.0...v2.2.0)
+
 ## v2.1.0 - 2025-09-14
 
 ### What's Changed
