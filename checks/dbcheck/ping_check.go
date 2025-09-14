@@ -46,8 +46,8 @@ func WithPingTimeout(timeout time.Duration) PingOption {
 	}
 }
 
-// NewPing creates a new SQL Ping Check instance with optional configuration.
-func NewPing(opts ...PingOption) *PingCheck {
+// NewPingCheck creates a new SQL Ping Check instance with optional configuration.
+func NewPingCheck(opts ...PingOption) *PingCheck {
 	check := &PingCheck{
 		name:    "database:ping",
 		db:      nil,

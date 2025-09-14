@@ -38,7 +38,7 @@ func main() {
   defer db.Close()
 
   // Create a new Ping Check
-  dbPingCheck := dbcheck.NewPing(
+  dbPingCheck := dbcheck.NewPingCheck(
     dbcheck.WithPingName("postgres-ping"),
     dbcheck.WithPingDB(db),
     dbcheck.WithPingTimeout(2*time.Second),
@@ -88,11 +88,11 @@ func main() {
   db.SetMaxIdleConns(10)
 
   // Create a new Connections Check
-  dbConnectionsCheck := dbcheck.NewConnections(
-    dbcheck.WithConnectionsName("postgres-connections"),
-    dbcheck.WithConnectionsDB(db),
-    dbcheck.WithConnectionsWarnThreshold(80.0),
-    dbcheck.WithConnectionsFailThreshold(95.0),
+  dbConnectionsCheck := dbcheck.NewOpenConnectionsCheck(
+    dbcheck.WithOpenConnectionsName("postgres-connections"),
+    dbcheck.WithOpenConnectionsDB(db),
+    dbcheck.WithOpenConnectionsWarnThreshold(80.0),
+    dbcheck.WithOpenConnectionsFailThreshold(95.0),
   )
 }
 ```

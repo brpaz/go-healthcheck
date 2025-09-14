@@ -10,4 +10,5 @@ pre-commit:
 
     update-godoc:
       glob: "*.go"
+      stage_fixed: true
       run: task godoc

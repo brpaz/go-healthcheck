@@ -66,8 +66,8 @@ func WithOpenConnectionsFailThreshold(threshold float64) OpenConnectionsOption {
 	}
 }
 
-// NewOpenConnections creates a new Database Connections Check instance with optional configuration.
-func NewOpenConnections(opts ...OpenConnectionsOption) *OpenConnectionsCheck {
+// NewOpenConnectionsCheck creates a new Database Connections Check instance with optional configuration.
+func NewOpenConnectionsCheck(opts ...OpenConnectionsOption) *OpenConnectionsCheck {
 	check := &OpenConnectionsCheck{
 		name:          "database:connections",
 		db:            nil,

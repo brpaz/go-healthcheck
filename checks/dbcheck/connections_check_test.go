@@ -35,7 +35,7 @@ func TestConnectionsCheck_Run(t *testing.T) {
 		}
 		mockDB.On("Stats").Return(stats)
 
-		check := dbcheck.NewOpenConnections(
+		check := dbcheck.NewOpenConnectionsCheck(
 			dbcheck.WithOpenConnectionsName("test-connections-check"),
 			dbcheck.WithOpenConnectionsDB(mockDB),
 		)
@@ -58,7 +58,7 @@ func TestConnectionsCheck_Run(t *testing.T) {
 		}
 		mockDB.On("Stats").Return(stats)
 
-		check := dbcheck.NewOpenConnections(
+		check := dbcheck.NewOpenConnectionsCheck(
 			dbcheck.WithOpenConnectionsName("test-connections-check"),
 			dbcheck.WithOpenConnectionsDB(mockDB),
 		)
@@ -81,7 +81,7 @@ func TestConnectionsCheck_Run(t *testing.T) {
 		}
 		mockDB.On("Stats").Return(stats)
 
-		check := dbcheck.NewOpenConnections(
+		check := dbcheck.NewOpenConnectionsCheck(
 			dbcheck.WithOpenConnectionsName("test-connections-check"),
 			dbcheck.WithOpenConnectionsDB(mockDB),
 		)
@@ -97,7 +97,7 @@ func TestConnectionsCheck_Run(t *testing.T) {
 	t.Run("check fails when database connection is nil", func(t *testing.T) {
 		t.Parallel()
 
-		check := dbcheck.NewOpenConnections(
+		check := dbcheck.NewOpenConnectionsCheck(
 			dbcheck.WithOpenConnectionsName("test-connections-check"),
 		)
 
@@ -117,7 +117,7 @@ func TestConnectionsCheck_Run(t *testing.T) {
 		}
 		mockDB.On("Stats").Return(stats)
 
-		check := dbcheck.NewOpenConnections(dbcheck.WithOpenConnectionsDB(mockDB))
+		check := dbcheck.NewOpenConnectionsCheck(dbcheck.WithOpenConnectionsDB(mockDB))
 		result := check.Run(context.Background())
 
 		assert.Equal(t, checks.StatusPass, result.Status)
@@ -135,7 +135,7 @@ func TestConnectionsCheck_Run(t *testing.T) {
 		}
 		mockDB.On("Stats").Return(stats)
 
-		check := dbcheck.NewOpenConnections(
+		check := dbcheck.NewOpenConnectionsCheck(
 			dbcheck.WithOpenConnectionsDB(mockDB),
 			dbcheck.WithOpenConnectionsWarnThreshold(50.0), // 50% warn threshold
 		)
@@ -157,7 +157,7 @@ func TestConnectionsCheck_Run(t *testing.T) {
 		}
 		mockDB.On("Stats").Return(stats)
 
-		check := dbcheck.NewOpenConnections(
+		check := dbcheck.NewOpenConnectionsCheck(
 			dbcheck.WithOpenConnectionsDB(mockDB),
 			dbcheck.WithOpenConnectionsFailThreshold(80.0),
 		)
@@ -179,7 +179,7 @@ func TestConnectionsCheck_Run(t *testing.T) {
 		}
 		mockDB.On("Stats").Return(stats)
 
-		check := dbcheck.NewOpenConnections(
+		check := dbcheck.NewOpenConnectionsCheck(
 			dbcheck.WithOpenConnectionsDB(mockDB),
 			dbcheck.WithOpenConnectionsWarnThreshold(60.0),
 			dbcheck.WithOpenConnectionsFailThreshold(80.0),
@@ -203,7 +203,7 @@ func TestConnectionsCheck_Run(t *testing.T) {
 		}
 		mockDB.On("Stats").Return(stats)
 
-		check := dbcheck.NewOpenConnections(dbcheck.WithOpenConnectionsDB(mockDB))
+		check := dbcheck.NewOpenConnectionsCheck(dbcheck.WithOpenConnectionsDB(mockDB))
 		result := check.Run(context.Background())
 
 		assert.Equal(t, checks.StatusPass, result.Status)
@@ -221,7 +221,7 @@ func TestConnectionsCheck_Run(t *testing.T) {
 		}
 		mockDB.On("Stats").Return(stats)
 
-		check := dbcheck.NewOpenConnections(dbcheck.WithOpenConnectionsDB(mockDB))
+		check := dbcheck.NewOpenConnectionsCheck(dbcheck.WithOpenConnectionsDB(mockDB))
 		result := check.Run(context.Background())
 
 		assert.Equal(t, checks.StatusPass, result.Status)
