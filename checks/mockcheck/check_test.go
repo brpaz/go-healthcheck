@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/brpaz/go-healthcheck/pkg/checks"
-	"github.com/brpaz/go-healthcheck/pkg/checks/mockcheck"
+	"github.com/brpaz/go-healthcheck/checks"
+	"github.com/brpaz/go-healthcheck/checks/mockcheck"
 )
 
 func TestMockCheck_New(t *testing.T) {

@@ -15,3 +15,4 @@ It follows closely the [RFC Healthcheck](https://inadarei.github.io/rfc-healthch
 - Use clear, descriptive variable and function names.
 - Keep code modular and maintainable.
 - Follow project naming conventions.
+- Do not create Example files

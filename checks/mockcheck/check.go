@@ -4,8 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/brpaz/go-healthcheck/pkg/checks"
+	"github.com/brpaz/go-healthcheck/checks"
 )
+
+var CheckName = "mock"
 
 // Check is a mock implementation of the Check interface for testing purposes.
 // It returns a single check result with the specified result status.
@@ -14,6 +16,7 @@ type Check struct {
 	status checks.Status
 }
 
+// Option is a functional option for configuring the MockCheck.
 type Option func(*Check)
 
 // WithName sets the name of the check.
@@ -33,7 +36,7 @@ func WithStatus(status checks.Status) Option {
 // New creates a new MockCheck instance with optional configuration.
 func New(opts ...Option) *Check {
 	m := &Check{
-		name:   "mock",
+		name:   CheckName,
 		status: checks.StatusPass,
 	}
 	for _, opt := range opts {
@@ -51,7 +54,7 @@ func (c *Check) GetName() string {
 func (c *Check) Run(ctx context.Context) []checks.Result {
 	var output string
 	if c.status == checks.StatusFail {
-		output = "mock check failed"
+		output = CheckName + " check failed"
 	}
 
 	result := []checks.Result{{

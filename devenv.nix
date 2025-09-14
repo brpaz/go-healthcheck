@@ -1,8 +1,6 @@
 {
   pkgs,
   lib,
-  config,
-  inputs,
   ...
 }: {
   languages.go = {
@@ -10,15 +8,13 @@
     package = pkgs.go;
   };
 
-  packages = [
-    pkgs.lefthook
-    pkgs.golangci-lint
-    pkgs.gotestsum
-    pkgs.go-task
+  packages = with pkgs; [
+    lefthook
+    golangci-lint
+    gotestsum
+    go-task
+    gomarkdoc
+    python313Packages.mkdocs-material
+    python313Packages.mkdocs
   ];
-
-  enterShell = ''
-    go version
-    lefthook install
-  '';
 }

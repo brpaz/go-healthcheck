@@ -13,7 +13,7 @@
 //	    mycheck := mockcheck.New(
 //			mockcheck.WithName("my-check"),
 //		)
-//		hc := healthcheck.New(
+//		hc := healthcheck.NewHealthChecker(
 //			healthcheck.WithServiceID("my-service"),
 //			healthcheck.WithDescription("My Service"),
 //			healthcheck.WithVersion("1.0.0"),
@@ -28,33 +28,21 @@ package healthcheck
 
 import (
 	"context"
-	"encoding/json"
-	"net/http"
 
-	"github.com/brpaz/go-healthcheck/pkg/checks"
+	"github.com/brpaz/go-healthcheck/checks"
 )
 
-// HealthCheck represents a collection of health checks for a service.
+type HealthChecker interface {
+	Execute(ctx context.Context) CheckRunResult
+}
+
+// HealthCheck aggregates multiple healthchecks and provides metadata about the service.
 type HealthCheck struct {
 	ServiceID   string
 	Description string
 	Version     string
 	ReleaseID   string
 	Checks      []checks.Check
-}
-
-// Response represents the health check response structure.
-// Health Check Response Format for HTTP APIs uses JSON format described in RFC 8259 and has the media type "application/health+json".
-// Its content consists of a single mandatory root field ("status") and several optional fields:
-// See https://tools.ietf.org/id/draft-inadarei-api-health-check-05.html#section-3
-type Response struct {
-	ServiceID   string                     `json:"service_id,omitempty"`
-	Description string                     `json:"description,omitempty"`
-	Version     string                     `json:"version,omitempty"`
-	ReleaseID   string                     `json:"release_id,omitempty"`
-	Output      string                     `json:"output,omitempty"`
-	Status      checks.Status              `json:"status"`
-	Checks      map[string][]checks.Result `json:"checks"`
 }
 
 // Option is a functional option for configuring HealthCheck.
@@ -95,8 +83,8 @@ func WithCheck(check checks.Check) Option {
 	}
 }
 
-// New creates a new HealthCheck instance with optional configuration.
-func New(opts ...Option) *HealthCheck {
+// NewHealthCheck creates a new HealthChecker instance the provided options.
+func NewHealthCheck(opts ...Option) *HealthCheck {
 	h := &HealthCheck{
 		Checks: make([]checks.Check, 0),
 	}
@@ -108,20 +96,40 @@ func New(opts ...Option) *HealthCheck {
 	return h
 }
 
-// Execute runs all checks in parallel and returns the result.
-// The global health check status is calculated based on the statuses of all checks
-func (h *HealthCheck) Execute(ctx context.Context) Response {
-	type checkResult struct {
+// AddCheck adds a new check to the HealthCheck instance.
+func (h *HealthCheck) AddCheck(check checks.Check) {
+	h.Checks = append(h.Checks, check)
+}
+
+// GetChecks returns the registered checks.
+func (h *HealthCheck) GetChecks() []checks.Check {
+	return h.Checks
+}
+
+// CheckRunResult aggregates the result of running a group of checks.
+type CheckRunResult struct {
+	Status checks.Status
+	Checks map[string][]checks.Result
+}
+
+// Execute runs all registered healthchecks and returns an aggregated result, composed of the
+// overall status and the individual results of each check.
+// The final status is determined as follows:
+// - If any check returns StatusFail, the overall status is StatusFail.
+// - If no checks return StatusFail but at least one returns StatusWarn, the overall status is StatusWarn.
+// - If all checks return StatusPass, the overall status is StatusPass.
+func (h *HealthCheck) Execute(ctx context.Context) CheckRunResult {
+	type resultCollector struct {
 		name   string
 		result []checks.Result
 	}
 
-	resultsChan := make(chan checkResult, len(h.Checks))
+	resultsChan := make(chan resultCollector, len(h.Checks))
 
 	for _, check := range h.Checks {
 		go func(c checks.Check) {
 			result := c.Run(ctx)
-			resultsChan <- checkResult{
+			resultsChan <- resultCollector{
 				name:   c.GetName(),
 				result: result,
 			}
@@ -129,12 +137,12 @@ func (h *HealthCheck) Execute(ctx context.Context) Response {
 	}
 
 	// Collect results
-	checksResults := make(map[string][]checks.Result)
+	results := make(map[string][]checks.Result)
 	status := checks.StatusPass
 
 	for range h.Checks {
 		cr := <-resultsChan
-		checksResults[cr.name] = append(checksResults[cr.name], cr.result...)
+		results[cr.name] = append(results[cr.name], cr.result...)
 
 		for _, result := range cr.result {
 			if result.Status == checks.StatusFail {
@@ -145,29 +153,8 @@ func (h *HealthCheck) Execute(ctx context.Context) Response {
 		}
 	}
 
-	response := Response{
-		ServiceID:   h.ServiceID,
-		Description: h.Description,
-		Version:     h.Version,
-		ReleaseID:   h.ReleaseID,
-		Status:      status,
-		Checks:      checksResults,
-	}
-
-	return response
-}
-
-// Handler provides an HTTP handler that can be used to serve the health check endpoint.
-func Handler(hc *HealthCheck) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		ctx := r.Context()
-		response := hc.Execute(ctx)
-		w.Header().Set("Content-Type", "application/health+json")
-
-		if response.Status == checks.StatusFail {
-			w.WriteHeader(http.StatusServiceUnavailable)
-		}
-
-		_ = json.NewEncoder(w).Encode(response)
+	return CheckRunResult{
+		Status: status,
+		Checks: results,
 	}
 }

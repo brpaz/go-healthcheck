@@ -9,8 +9,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/brpaz/go-healthcheck/pkg/checks"
-	"github.com/brpaz/go-healthcheck/pkg/checks/httpcheck"
+	"github.com/brpaz/go-healthcheck/checks"
+	"github.com/brpaz/go-healthcheck/checks/httpcheck"
 )
 
 // customRoundTripper is a test helper that adds a custom header to requests
@@ -37,7 +37,7 @@ func TestHTTPCheck_Run(t *testing.T) {
 
 		check := httpcheck.New(
 			httpcheck.WithName("test-check"),
-			httpcheck.WithEndpoint(server.URL),
+			httpcheck.WithURL(server.URL),
 			httpcheck.WithTimeout(1*time.Second),
 			httpcheck.WithComponentID("test-component"),
 			httpcheck.WithComponentType("http"),
@@ -64,7 +64,7 @@ func TestHTTPCheck_Run(t *testing.T) {
 
 		check := httpcheck.New(
 			httpcheck.WithName("test-check"),
-			httpcheck.WithEndpoint(server.URL),
+			httpcheck.WithURL(server.URL),
 		)
 
 		results := check.Run(context.Background())
@@ -87,7 +87,7 @@ func TestHTTPCheck_Run(t *testing.T) {
 		assert.Len(t, results, 1)
 		result := results[0]
 		assert.Equal(t, checks.StatusFail, result.Status)
-		assert.Contains(t, result.Output, "unsupported protocol scheme")
+		assert.Contains(t, result.Output, "URL is required for HTTP health check")
 	})
 
 	t.Run("successful check with custom success status codes", func(t *testing.T) {
@@ -100,8 +100,8 @@ func TestHTTPCheck_Run(t *testing.T) {
 
 		check := httpcheck.New(
 			httpcheck.WithName("test-check"),
-			httpcheck.WithEndpoint(server.URL),
-			httpcheck.WithSuccessStatusCodes(201, 202),
+			httpcheck.WithURL(server.URL),
+			httpcheck.WithExpectedStatus(201, 202),
 		)
 
 		results := check.Run(context.Background())
@@ -122,7 +122,7 @@ func TestHTTPCheck_Run(t *testing.T) {
 
 		check := httpcheck.New(
 			httpcheck.WithName("timeout-test"),
-			httpcheck.WithEndpoint(server.URL),
+			httpcheck.WithURL(server.URL),
 			httpcheck.WithTimeout(50*time.Millisecond), // Short timeout
 		)
 
@@ -161,7 +161,7 @@ func TestHTTPCheck_Run(t *testing.T) {
 
 		check := httpcheck.New(
 			httpcheck.WithName("custom-client-test"),
-			httpcheck.WithEndpoint(server.URL),
+			httpcheck.WithURL(server.URL),
 			httpcheck.WithHTTPClient(customClient),
 		)
 
@@ -189,7 +189,7 @@ func TestHTTPCheck_Run(t *testing.T) {
 
 		check := httpcheck.New(
 			httpcheck.WithName("client-timeout-test"),
-			httpcheck.WithEndpoint(server.URL),
+			httpcheck.WithURL(server.URL),
 			httpcheck.WithHTTPClient(customClient),
 			httpcheck.WithTimeout(1*time.Second), // This should be overridden by client timeout
 		)
@@ -209,7 +209,7 @@ func TestHTTPCheck_GetName(t *testing.T) {
 	t.Run("returns custom name when set", func(t *testing.T) {
 		check := httpcheck.New(
 			httpcheck.WithName("my-custom-check"),
-			httpcheck.WithEndpoint("http://example.com"),
+			httpcheck.WithURL("http://example.com"),
 		)
 
 		assert.Equal(t, "my-custom-check", check.GetName())
@@ -217,7 +217,7 @@ func TestHTTPCheck_GetName(t *testing.T) {
 
 	t.Run("returns default name when not set", func(t *testing.T) {
 		check := httpcheck.New(
-			httpcheck.WithEndpoint("http://example.com"),
+			httpcheck.WithURL("http://example.com"),
 		)
 
 		assert.Equal(t, "http-check", check.GetName())

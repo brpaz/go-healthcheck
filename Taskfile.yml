@@ -19,3 +19,15 @@ tasks:
     cmds:
       - gotestsum --format=testname -- ./... -coverprofile=coverage.out
     silent: true
+
+  godoc:
+    desc: Generate documentation for Golang packages
+    cmds:
+      - gomarkdoc --output GODOC.md ./
+      - gomarkdoc --output '{{ "{{" }}.Dir}}/README.md' ./checks/...
+
+  docs-serve:
+    desc: Serve documentation locally
+    cmds:
+      - mkdocs serve
+    silent: true

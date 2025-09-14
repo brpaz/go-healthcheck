@@ -1,5 +1,5 @@
-// Package httpcheck provides HTTP endpoint health checks.
-// It requests HTTP endpoints and verifies their availability based on status codes and response times.
+// Package httpcheck provides HTTP url health checks.
+// It requests HTTP urls and verifies their availability based on status codes and response times.
 package httpcheck
 
 import (
@@ -8,20 +8,20 @@ import (
 	"slices"
 	"time"
 
-	"github.com/brpaz/go-healthcheck/pkg/checks"
+	"github.com/brpaz/go-healthcheck/checks"
 )
 
 const defaultTimeout = 5 * time.Second
 
-// Check represents an HTTP health check that verifies endpoint availability.
+// Check represents an HTTP health check that verifies url availability.
 type Check struct {
-	name               string
-	componentType      string
-	componentID        string
-	endpoint           string
-	timeout            time.Duration
-	successStatusCodes []int
-	client             *http.Client
+	name           string
+	componentType  string
+	componentID    string
+	url            string
+	timeout        time.Duration
+	exceptedStatus []int
+	client         *http.Client
 }
 
 // Option is a functional option for configuring Check.
@@ -34,10 +34,10 @@ func WithName(name string) Option {
 	}
 }
 
-// WithEndpoint sets the endpoint of the check.
-func WithEndpoint(endpoint string) Option {
+// WithURL sets the url of the check.
+func WithURL(url string) Option {
 	return func(c *Check) {
-		c.endpoint = endpoint
+		c.url = url
 	}
 }
 
@@ -55,11 +55,11 @@ func WithHTTPClient(client *http.Client) Option {
 	}
 }
 
-// WithSuccessStatusCodes sets the status codes that will be considered as successful.
+// WithExpectedStatus sets the status codes that will be considered as successful.
 // By default, any status code less than 400 is considered a success.
-func WithSuccessStatusCodes(codes ...int) Option {
+func WithExpectedStatus(codes ...int) Option {
 	return func(c *Check) {
-		c.successStatusCodes = codes
+		c.exceptedStatus = codes
 	}
 }
 
@@ -79,13 +79,13 @@ func WithComponentID(componentID string) Option {
 // New creates a new HTTP Check instance with optional configuration.
 func New(opts ...Option) *Check {
 	check := &Check{
-		name:               "http-check",
-		componentType:      "http",
-		componentID:        "",
-		endpoint:           "",
-		timeout:            defaultTimeout,
-		successStatusCodes: nil, // Use default behavior (< 400)
-		client:             http.DefaultClient,
+		name:           "http-check",
+		componentType:  "http",
+		componentID:    "",
+		url:            "",
+		timeout:        defaultTimeout,
+		exceptedStatus: nil, // Use default behavior (< 400)
+		client:         http.DefaultClient,
 	}
 
 	for _, opt := range opts {
@@ -102,6 +102,17 @@ func (c *Check) GetName() string {
 
 // Run executes the HTTP health check and returns the result.
 func (c *Check) Run(ctx context.Context) []checks.Result {
+	// Validate configuration
+	if c.url == "" {
+		return []checks.Result{{
+			Status:        checks.StatusFail,
+			Output:        "URL is required for HTTP health check",
+			Time:          time.Now(),
+			ComponentType: c.componentType,
+			ComponentID:   c.componentID,
+		}}
+	}
+
 	result := checks.Result{
 		Status:        checks.StatusPass,
 		Time:          time.Now(),
@@ -113,7 +124,7 @@ func (c *Check) Run(ctx context.Context) []checks.Result {
 	requestCtx, cancel := context.WithTimeout(ctx, c.timeout)
 	defer cancel()
 
-	req, err := http.NewRequestWithContext(requestCtx, "GET", c.endpoint, nil)
+	req, err := http.NewRequestWithContext(requestCtx, "GET", c.url, nil)
 	if err != nil {
 		result.Output = "failed to create request: " + err.Error()
 		result.Status = checks.StatusFail
@@ -136,7 +147,7 @@ func (c *Check) Run(ctx context.Context) []checks.Result {
 	result.ObservedValue = duration.Milliseconds()
 
 	// Evaluate response status
-	if c.isSuccessfulStatusCode(resp.StatusCode) {
+	if c.isExpectedStatusCode(resp.StatusCode) {
 		result.Status = checks.StatusPass
 	} else {
 		result.Status = checks.StatusFail
@@ -146,13 +157,12 @@ func (c *Check) Run(ctx context.Context) []checks.Result {
 	return []checks.Result{result}
 }
 
-// isSuccessfulStatusCode determines if the given status code indicates success.
-func (c *Check) isSuccessfulStatusCode(statusCode int) bool {
+// isExpectedStatusCode determines if the given status code indicates success.
+func (c *Check) isExpectedStatusCode(statusCode int) bool {
 	// If specific success codes are configured, use them
-	if len(c.successStatusCodes) > 0 {
-		return slices.Contains(c.successStatusCodes, statusCode)
+	if len(c.exceptedStatus) > 0 {
+		return slices.Contains(c.exceptedStatus, statusCode)
 	}
 
-	// Default behavior: any status code < 400 is considered successful
-	return statusCode < 400
+	return statusCode >= 200 && statusCode < 400
 }

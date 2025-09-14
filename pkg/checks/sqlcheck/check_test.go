@@ -1,1 +1,0 @@
-package sqlcheck_test
