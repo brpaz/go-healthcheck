@@ -1,10 +1,11 @@
-name: PR Title Check
+name: PR Check
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited]
 
 jobs:
   validate-pr-title:
+    name: Check PR title
     runs-on: ubuntu-latest
     steps:
       - name: PR Conventional Commit Validation
@@ -14,7 +15,7 @@ jobs:
           add_label: "false"
 
   validate-pr-labels:
-    name: Check labels
+    name: Check PR Labels
     runs-on: ubuntu-latest
     steps:
       - uses: docker://agilepathway/pull-request-label-checker:v1.6.65
