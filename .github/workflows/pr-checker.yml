@@ -1,10 +1,11 @@
-name: PR Title Check
+name: PR Check
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited]
 
 jobs:
   validate-pr-title:
+    name: Check PR title
     runs-on: ubuntu-latest
     steps:
       - name: PR Conventional Commit Validation
@@ -12,3 +13,12 @@ jobs:
         with:
           task_types: '["feat","fix","docs","test","ci","refactor","perf","chore","revert"]'
           add_label: "false"
+
+  validate-pr-labels:
+    name: Check PR Labels
+    runs-on: ubuntu-latest
+    steps:
+      - uses: docker://agilepathway/pull-request-label-checker:v1.6.65
+        with:
+          one_of: "breaking,feature,enchancement,bug,docs,dependencies,security,ci,maintenance,chore"
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
