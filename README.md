@@ -3,9 +3,11 @@
 > A Golang library that provides Healthchecks for your Go Application. It follows closely the [RFC Healthcheck](https://inadarei.github.io/rfc-healthcheck/) for format of the health check response.
 
 ![Go version](https://img.shields.io/github/go-mod/go-version/brpaz/go-healthcheck?style=for-the-badge)
-[![Go Reference](https://pkg.go.dev/badge/github.com/brpaz/go-healthcheck.svg)](https://pkg.go.dev/github.com/brpaz/go-healthcheck)
-[![Go Report Card](https://goreportcard.com/badge/github.com/brpaz/go-healthcheck)](https://goreportcard.com/report/github.com/brpaz/go-healthcheck?style=for-the-badge)
-[![Tests](https://github.com/brpaz/go-healthcheck/actions/workflows/test.yml/badge.svg)](https://github.com/brpaz/go-healthcheck/actions/workflows/ci.yml?style=for-the-badge)
+[![Go Report Card](https://goreportcard.com/badge/github.com/brpaz/go-healthcheck?style=for-the-badge)](https://goreportcard.com/report/github.com/brpaz/go-healthcheck)
+
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/brpaz/go-healthcheck/ci.yml?style=for-the-badge)](https://github.com/brpaz/go-healthcheck/actions/workflows/ci.yml)
+[![Coverage Status](https://img.shields.io/codecov/c/github/brpaz/go-healthcheck?style=for-the-badge)](https://codecov.io/gh/brpaz/go-healthcheck)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 ## Features
 
