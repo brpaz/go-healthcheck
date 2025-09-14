@@ -11,7 +11,7 @@ Package tcpcheck provides TCP/UDP port connectivity health checks. It verifies t
 ## Index
 
 - [type Check](<#Check>)
-  - [func New\(opts ...Option\) \*Check](<#New>)
+  - [func NewCheck\(opts ...Option\) \*Check](<#NewCheck>)
   - [func \(c \*Check\) Address\(\) string](<#Check.Address>)
   - [func \(c \*Check\) GetName\(\) string](<#Check.GetName>)
   - [func \(c \*Check\) Run\(ctx context.Context\) checks.Result](<#Check.Run>)
@@ -39,14 +39,14 @@ type Check struct {
 }
 ```
 
-<a name="New"></a>
-### func [New](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L96>)
+<a name="NewCheck"></a>
+### func [NewCheck](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L96>)
 
 ```go
 func NewCheck(opts ...Option) *Check
 ```
 
-New creates a new TCP/UDP Check instance with optional configuration.
+NewCheck creates a new TCP/UDP Check instance with optional configuration.
 
 <a name="Check.Address"></a>
 ### func \(\*Check\) [Address](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L167>)

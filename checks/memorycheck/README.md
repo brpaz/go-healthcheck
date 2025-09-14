@@ -11,7 +11,7 @@ Package memorycheck provides system memory monitoring health checks for Linux sy
 ## Index
 
 - [type Check](<#Check>)
-  - [func New\(opts ...Option\) \*Check](<#New>)
+  - [func NewCheck\(opts ...Option\) \*Check](<#NewCheck>)
   - [func \(c \*Check\) GetMemoryInfo\(\) \(\*MemoryStats, error\)](<#Check.GetMemoryInfo>)
   - [func \(c \*Check\) GetName\(\) string](<#Check.GetName>)
   - [func \(c \*Check\) Run\(ctx context.Context\) checks.Result](<#Check.Run>)
@@ -37,14 +37,14 @@ type Check struct {
 }
 ```
 
-<a name="New"></a>
-### func [New](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/check.go#L60>)
+<a name="NewCheck"></a>
+### func [NewCheck](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/check.go#L60>)
 
 ```go
 func NewCheck(opts ...Option) *Check
 ```
 
-New creates a new Memory Check instance with optional configuration.
+NewCheck creates a new Memory Check instance with optional configuration.
 
 <a name="Check.GetMemoryInfo"></a>
 ### func \(\*Check\) [GetMemoryInfo](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/check.go#L115>)
