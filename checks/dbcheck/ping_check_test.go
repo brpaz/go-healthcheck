@@ -31,7 +31,7 @@ func TestPingCheck_Run(t *testing.T) {
 		mockDB := &MockDatabasePinger{}
 		mockDB.On("PingContext", mock.Anything).Return(nil)
 
-		check := dbcheck.NewPing(
+		check := dbcheck.NewPingCheck(
 			dbcheck.WithPingName("test-db-check"),
 			dbcheck.WithPingDB(mockDB),
 		)
@@ -49,7 +49,7 @@ func TestPingCheck_Run(t *testing.T) {
 		mockDB := &MockDatabasePinger{}
 		mockDB.On("PingContext", mock.Anything).Return(errors.New("connection error"))
 
-		check := dbcheck.NewPing(
+		check := dbcheck.NewPingCheck(
 			dbcheck.WithPingName("test-db-check"),
 			dbcheck.WithPingDB(mockDB),
 		)
@@ -65,7 +65,7 @@ func TestPingCheck_Run(t *testing.T) {
 	t.Run("check fails when database connection is nil", func(t *testing.T) {
 		t.Parallel()
 
-		check := dbcheck.NewPing(
+		check := dbcheck.NewPingCheck(
 			dbcheck.WithPingName("test-db-check"),
 		)
 
