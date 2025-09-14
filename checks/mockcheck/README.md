@@ -32,7 +32,7 @@ type Check struct {
 ### func [New](<https://github.com/brpaz/go-healthcheck/blob/master/checks/mockcheck/check.go#L35>)
 
 ```go
-func New(opts ...Option) *Check
+func NewCheck(opts ...Option) *Check
 ```
 
 New creates a new MockCheck instance with optional configuration.

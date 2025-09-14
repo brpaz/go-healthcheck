@@ -61,8 +61,8 @@ func WithExpectedStatus(codes ...int) Option {
 	}
 }
 
-// New creates a new HTTP Check instance with optional configuration.
-func New(opts ...Option) *Check {
+// NewCheck creates a new HTTP Check instance with optional configuration.
+func NewCheck(opts ...Option) *Check {
 	check := &Check{
 		name:           "http-check",
 		url:            "",

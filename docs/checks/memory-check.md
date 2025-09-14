@@ -22,7 +22,7 @@ import (
 )
 
 func main() {
-    check := memorycheck.New(
+    check := memorycheck.NewCheck(
         memorycheck.WithName("memory:utilization"),
         memorycheck.WithWarnThreshold(70.0),
         memorycheck.WithFailThreshold(85.0),

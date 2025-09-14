@@ -51,8 +51,8 @@ func WithTimeout(timeout time.Duration) Option {
 	}
 }
 
-// New creates a new Redis Check instance with optional configuration.
-func New(opts ...Option) *Check {
+// NewCheck creates a new Redis Check instance with optional configuration.
+func NewCheck(opts ...Option) *Check {
 	check := &Check{
 		name:    Name,
 		client:  nil,

@@ -10,7 +10,7 @@
 // import "github.com/brpaz/go-healthcheck/v2/checks/mockcheck"
 //
 //	func main() {
-//	    mycheck := mockcheck.New(
+//	    mycheck := mockcheck.NewCheck(
 //			mockcheck.WithName("my-check"),
 //		)
 //		hc := healthcheck.New(

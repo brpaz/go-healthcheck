@@ -41,7 +41,7 @@ type Check struct {
 ### func [New](<https://github.com/brpaz/go-healthcheck/blob/master/checks/memorycheck/check.go#L60>)
 
 ```go
-func New(opts ...Option) *Check
+func NewCheck(opts ...Option) *Check
 ```
 
 New creates a new Memory Check instance with optional configuration.

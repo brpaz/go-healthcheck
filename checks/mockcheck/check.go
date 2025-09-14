@@ -31,8 +31,8 @@ func WithStatus(status checks.Status) Option {
 	}
 }
 
-// New creates a new MockCheck instance with optional configuration.
-func New(opts ...Option) *Check {
+// NewCheck creates a new MockCheck instance with optional configuration.
+func NewCheck(opts ...Option) *Check {
 	m := &Check{
 		name:   "mock",
 		status: checks.StatusPass,

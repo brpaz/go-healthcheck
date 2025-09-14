@@ -37,7 +37,7 @@ type Check struct {
 ### func [New](<https://github.com/brpaz/go-healthcheck/blob/master/checks/httpcheck/check.go#L65>)
 
 ```go
-func New(opts ...Option) *Check
+func NewCheck(opts ...Option) *Check
 ```
 
 New creates a new HTTP Check instance with optional configuration.

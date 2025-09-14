@@ -24,7 +24,7 @@ import (
 )
 
 func main() {
-    check := httpcheck.New(
+    check := httpcheck.NewCheck(
         httpcheck.WithName("http:google"),
         httpcheck.WithURL("https://www.google.com"),
         httpcheck.WithExpectedStatus([]int{200,201}),

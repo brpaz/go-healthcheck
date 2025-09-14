@@ -75,7 +75,7 @@ func TestTCPCheck_New(t *testing.T) {
 	t.Run("creates check with default values", func(t *testing.T) {
 		t.Parallel()
 
-		check := tcpcheck.New()
+		check := tcpcheck.NewCheck()
 
 		assert.NotNil(t, check)
 		assert.Equal(t, "tcp-check", check.GetName())
@@ -87,7 +87,7 @@ func TestTCPCheck_New(t *testing.T) {
 		mockDialer := &MockDialer{}
 		customTimeout := 10 * time.Second
 
-		check := tcpcheck.New(
+		check := tcpcheck.NewCheck(
 			tcpcheck.WithName("custom-tcp-check"),
 			tcpcheck.WithHost("localhost"),
 			tcpcheck.WithPort(8080),
@@ -105,7 +105,7 @@ func TestTCPCheck_New(t *testing.T) {
 func TestTCPCheck_GetName(t *testing.T) {
 	t.Parallel()
 
-	check := tcpcheck.New()
+	check := tcpcheck.NewCheck()
 	assert.Equal(t, "tcp-check", check.GetName())
 }
 
@@ -115,7 +115,7 @@ func TestTCPCheck_Address(t *testing.T) {
 	t.Run("returns correct TCP address", func(t *testing.T) {
 		t.Parallel()
 
-		check := tcpcheck.New(
+		check := tcpcheck.NewCheck(
 			tcpcheck.WithHost("example.com"),
 			tcpcheck.WithPort(443),
 			tcpcheck.WithNetwork(tcpcheck.TCP),
@@ -127,7 +127,7 @@ func TestTCPCheck_Address(t *testing.T) {
 	t.Run("returns correct UDP address", func(t *testing.T) {
 		t.Parallel()
 
-		check := tcpcheck.New(
+		check := tcpcheck.NewCheck(
 			tcpcheck.WithHost("localhost"),
 			tcpcheck.WithPort(53),
 			tcpcheck.WithNetwork(tcpcheck.UDP),
@@ -143,7 +143,7 @@ func TestTCPCheck_Run(t *testing.T) {
 	t.Run("fails when host is empty", func(t *testing.T) {
 		t.Parallel()
 
-		check := tcpcheck.New(tcpcheck.WithPort(8080))
+		check := tcpcheck.NewCheck(tcpcheck.WithPort(8080))
 		result := check.Run(context.Background())
 
 		assert.Equal(t, checks.StatusFail, result.Status)
@@ -153,7 +153,7 @@ func TestTCPCheck_Run(t *testing.T) {
 	t.Run("fails when port is invalid", func(t *testing.T) {
 		t.Parallel()
 
-		check := tcpcheck.New(
+		check := tcpcheck.NewCheck(
 			tcpcheck.WithHost("localhost"),
 			tcpcheck.WithPort(0),
 		)
@@ -166,7 +166,7 @@ func TestTCPCheck_Run(t *testing.T) {
 	t.Run("fails when port is too high", func(t *testing.T) {
 		t.Parallel()
 
-		check := tcpcheck.New(
+		check := tcpcheck.NewCheck(
 			tcpcheck.WithHost("localhost"),
 			tcpcheck.WithPort(70000),
 		)
@@ -185,7 +185,7 @@ func TestTCPCheck_Run(t *testing.T) {
 		mockDialer.On("DialContext", mock.Anything, "tcp", "localhost:8080").Return(mockConn, nil)
 		mockConn.On("Close").Return(nil)
 
-		check := tcpcheck.New(
+		check := tcpcheck.NewCheck(
 			tcpcheck.WithHost("localhost"),
 			tcpcheck.WithPort(8080),
 			tcpcheck.WithDialer(mockDialer),
@@ -209,7 +209,7 @@ func TestTCPCheck_Run(t *testing.T) {
 
 		mockDialer.On("DialContext", mock.Anything, "tcp", "localhost:8080").Return((*MockConn)(nil), connError)
 
-		check := tcpcheck.New(
+		check := tcpcheck.NewCheck(
 			tcpcheck.WithHost("localhost"),
 			tcpcheck.WithPort(8080),
 			tcpcheck.WithDialer(mockDialer),
@@ -233,7 +233,7 @@ func TestTCPCheck_Run(t *testing.T) {
 		mockDialer.On("DialContext", mock.Anything, "tcp", "localhost:8080").Return(mockConn, nil)
 		mockConn.On("Close").Return(errors.New("close failed"))
 
-		check := tcpcheck.New(
+		check := tcpcheck.NewCheck(
 			tcpcheck.WithHost("localhost"),
 			tcpcheck.WithPort(8080),
 			tcpcheck.WithDialer(mockDialer),
@@ -256,7 +256,7 @@ func TestTCPCheck_Run(t *testing.T) {
 
 		mockDialer.On("DialContext", mock.Anything, "tcp", "localhost:8080").Return((*MockConn)(nil), timeoutError)
 
-		check := tcpcheck.New(
+		check := tcpcheck.NewCheck(
 			tcpcheck.WithHost("localhost"),
 			tcpcheck.WithPort(8080),
 			tcpcheck.WithTimeout(1*time.Millisecond),
@@ -280,7 +280,7 @@ func TestTCPCheck_Run(t *testing.T) {
 		mockDialer := &MockDialer{}
 		mockDialer.On("DialContext", mock.Anything, "tcp", "localhost:8080").Return((*MockConn)(nil), context.Canceled)
 
-		check := tcpcheck.New(
+		check := tcpcheck.NewCheck(
 			tcpcheck.WithHost("localhost"),
 			tcpcheck.WithPort(8080),
 			tcpcheck.WithDialer(mockDialer),
@@ -301,14 +301,14 @@ func TestTCPCheck_Options(t *testing.T) {
 	t.Run("WithName option", func(t *testing.T) {
 		t.Parallel()
 
-		check := tcpcheck.New(tcpcheck.WithName("custom-name"))
+		check := tcpcheck.NewCheck(tcpcheck.WithName("custom-name"))
 		assert.Equal(t, "custom-name", check.GetName())
 	})
 
 	t.Run("WithHost and WithPort options", func(t *testing.T) {
 		t.Parallel()
 
-		check := tcpcheck.New(
+		check := tcpcheck.NewCheck(
 			tcpcheck.WithHost("example.com"),
 			tcpcheck.WithPort(443),
 		)
@@ -319,7 +319,7 @@ func TestTCPCheck_Options(t *testing.T) {
 	t.Run("WithNetwork option", func(t *testing.T) {
 		t.Parallel()
 
-		check := tcpcheck.New(
+		check := tcpcheck.NewCheck(
 			tcpcheck.WithHost("localhost"),
 			tcpcheck.WithPort(53),
 			tcpcheck.WithNetwork(tcpcheck.UDP),
@@ -344,7 +344,7 @@ func TestTCPCheck_Options(t *testing.T) {
 			assert.WithinDuration(t, expectedDeadline, deadline, 50*time.Millisecond)
 		}).Return((*MockConn)(nil), errors.New("timeout"))
 
-		check := tcpcheck.New(
+		check := tcpcheck.NewCheck(
 			tcpcheck.WithHost("localhost"),
 			tcpcheck.WithPort(8080),
 			tcpcheck.WithTimeout(customTimeout),

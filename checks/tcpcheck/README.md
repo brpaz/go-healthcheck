@@ -43,7 +43,7 @@ type Check struct {
 ### func [New](<https://github.com/brpaz/go-healthcheck/blob/master/checks/tcpcheck/check.go#L96>)
 
 ```go
-func New(opts ...Option) *Check
+func NewCheck(opts ...Option) *Check
 ```
 
 New creates a new TCP/UDP Check instance with optional configuration.

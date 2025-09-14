@@ -30,7 +30,7 @@ func TestMemoryCheck_Run(t *testing.T) {
 	t.Run("basic memory check succeeds", func(t *testing.T) {
 		t.Parallel()
 
-		check := memorycheck.New()
+		check := memorycheck.NewCheck()
 		result := check.Run(context.Background())
 
 		assert.Equal(t, checks.StatusPass, result.Status)
@@ -42,7 +42,7 @@ func TestMemoryCheck_Run(t *testing.T) {
 	t.Run("custom name check", func(t *testing.T) {
 		t.Parallel()
 
-		check := memorycheck.New(memorycheck.WithName("custom-memory-check"))
+		check := memorycheck.NewCheck(memorycheck.WithName("custom-memory-check"))
 		result := check.Run(context.Background())
 
 		assert.Equal(t, checks.StatusPass, result.Status)
@@ -54,12 +54,12 @@ func TestMemoryCheck_GetName(t *testing.T) {
 	t.Parallel()
 
 	t.Run("returns default name", func(t *testing.T) {
-		check := memorycheck.New()
+		check := memorycheck.NewCheck()
 		assert.Equal(t, "memory", check.GetName())
 	})
 
 	t.Run("returns custom name when set", func(t *testing.T) {
-		check := memorycheck.New(memorycheck.WithName("my-memory-check"))
+		check := memorycheck.NewCheck(memorycheck.WithName("my-memory-check"))
 		assert.Equal(t, "my-memory-check", check.GetName())
 	})
 }
@@ -70,7 +70,7 @@ func TestMemoryCheck_Thresholds(t *testing.T) {
 	t.Run("passes when usage is below warn threshold", func(t *testing.T) {
 		t.Parallel()
 
-		check := memorycheck.New(
+		check := memorycheck.NewCheck(
 			memorycheck.WithWarnThreshold(80.0),
 			memorycheck.WithFailThreshold(90.0),
 		)
@@ -84,7 +84,7 @@ func TestMemoryCheck_Thresholds(t *testing.T) {
 	t.Run("supports custom thresholds", func(t *testing.T) {
 		t.Parallel()
 
-		check := memorycheck.New(
+		check := memorycheck.NewCheck(
 			memorycheck.WithWarnThreshold(70.0),
 			memorycheck.WithFailThreshold(85.0),
 		)
@@ -100,7 +100,7 @@ func TestMemoryCheck_ThresholdLogic(t *testing.T) {
 		t.Parallel()
 
 		mockReader := &MockMemoryReader{UsedPct: 95.0} // 95% usage
-		check := memorycheck.New(
+		check := memorycheck.NewCheck(
 			memorycheck.WithWarnThreshold(80.0), // 80%
 			memorycheck.WithFailThreshold(90.0), // 90%
 			memorycheck.WithMemoryReader(mockReader),
@@ -118,7 +118,7 @@ func TestMemoryCheck_ThresholdLogic(t *testing.T) {
 		t.Parallel()
 
 		mockReader := &MockMemoryReader{UsedPct: 85.0} // 85% usage
-		check := memorycheck.New(
+		check := memorycheck.NewCheck(
 			memorycheck.WithWarnThreshold(80.0), // 80%
 			memorycheck.WithFailThreshold(90.0), // 90%
 			memorycheck.WithMemoryReader(mockReader),
@@ -136,7 +136,7 @@ func TestMemoryCheck_ThresholdLogic(t *testing.T) {
 		t.Parallel()
 
 		mockReader := &MockMemoryReader{UsedPct: 70.0} // 70% usage
-		check := memorycheck.New(
+		check := memorycheck.NewCheck(
 			memorycheck.WithWarnThreshold(80.0), // 80%
 			memorycheck.WithFailThreshold(90.0), // 90%
 			memorycheck.WithMemoryReader(mockReader),

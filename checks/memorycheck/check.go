@@ -56,8 +56,8 @@ func WithMemoryReader(reader MemoryReader) Option {
 	}
 }
 
-// New creates a new Memory Check instance with optional configuration.
-func New(opts ...Option) *Check {
+// NewCheck creates a new Memory Check instance with optional configuration.
+func NewCheck(opts ...Option) *Check {
 	check := &Check{
 		name:          "memory",
 		warnThreshold: 80.0,

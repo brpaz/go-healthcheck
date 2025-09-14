@@ -28,7 +28,7 @@ func newHealthChechkerWithResult(t *testing.T, status checks.Status) *healthchec
 		healthcheck.WithReleaseID(testReleaseID),
 		healthcheck.WithVersion(testVersion),
 		healthcheck.WithDescription(testDescription),
-		healthcheck.WithCheck(mockcheck.New(
+		healthcheck.WithCheck(mockcheck.NewCheck(
 			mockcheck.WithName(testCheckName),
 			mockcheck.WithStatus(status),
 		)),
