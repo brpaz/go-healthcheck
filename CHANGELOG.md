@@ -1,5 +1,14 @@
 # Changelog
 
+## v2.1.0 - 2025-09-14
+
+### What's Changed
+
+#### 🚀 Features
+
+- fix: better construct name @brpaz (#11)
+  **Full Changelog**: [https://github.com/brpaz/go-healthcheck/compare/v2.0.2...v2.1.0](https://github.com/brpaz/go-healthcheck/compare/v2.0.2...v2.1.0)
+
 ## v2.0.2 - 2025-09-14
 
 ### What's Changed
