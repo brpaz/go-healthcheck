@@ -1,5 +1,4 @@
-// Package connectionscheck provides database connections health check implementation.
-package connectionscheck
+package dbcheck
 
 import (
 	"context"
@@ -11,19 +10,17 @@ import (
 )
 
 const (
-	defaultTimeout       = 5 * time.Second
-	defaultWarnThreshold = 0.8 // 80% of max connections
-	defaultFailThreshold = 1.0 // 100% of max connections
+	defaultConnectionsWarnThreshold = 80.0
+	defaultConnectionsFailThreshold = 100.0
 )
 
-// DatabaseStatsProvider interface for database instances that provide connection statistics.
 type DatabaseStatsProvider interface {
 	Stats() sql.DBStats
 }
 
-// ConnectionsCheck represents a database connections health check that verifies
+// OpenConnectionsCheck represents a database connections health check that verifies
 // the number of open connections against the configured maximum.
-type ConnectionsCheck struct {
+type OpenConnectionsCheck struct {
 	name          string
 	db            DatabaseStatsProvider
 	timeout       time.Duration
@@ -31,52 +28,52 @@ type ConnectionsCheck struct {
 	failThreshold float64
 }
 
-// Option is a functional option for configuring ConnectionsCheck.
-type Option func(*ConnectionsCheck)
+// OpenConnectionsOption is a functional option for configuring ConnectionsCheck.
+type OpenConnectionsOption func(*OpenConnectionsCheck)
 
-// WithName sets the name of the connections check.
-func WithName(name string) Option {
-	return func(c *ConnectionsCheck) {
+// WithOpenConnectionsName sets the name of the connections check.
+func WithOpenConnectionsName(name string) OpenConnectionsOption {
+	return func(c *OpenConnectionsCheck) {
 		c.name = name
 	}
 }
 
-// WithDB sets the database connection to use for the health check.
-func WithDB(db DatabaseStatsProvider) Option {
-	return func(c *ConnectionsCheck) {
+// WithOpenConnectionsDB sets the database connection to use for the connections health check.
+func WithOpenConnectionsDB(db DatabaseStatsProvider) OpenConnectionsOption {
+	return func(c *OpenConnectionsCheck) {
 		c.db = db
 	}
 }
 
-// WithTimeout sets the timeout for the connections check operation.
-func WithTimeout(timeout time.Duration) Option {
-	return func(c *ConnectionsCheck) {
+// WithOpenConnectionsTimeout sets the timeout for the connections check operation.
+func WithOpenConnectionsTimeout(timeout time.Duration) OpenConnectionsOption {
+	return func(c *OpenConnectionsCheck) {
 		c.timeout = timeout
 	}
 }
 
-// WithWarnThreshold sets the warning threshold as a percentage (0.0-1.0) of max connections.
-func WithWarnThreshold(threshold float64) Option {
-	return func(c *ConnectionsCheck) {
+// WithOpenConnectionsWarnThreshold sets the warning threshold as a percentage (0-100) of max connections.
+func WithOpenConnectionsWarnThreshold(threshold float64) OpenConnectionsOption {
+	return func(c *OpenConnectionsCheck) {
 		c.warnThreshold = threshold
 	}
 }
 
-// WithFailThreshold sets the failure threshold as a percentage (0.0-1.0) of max connections.
-func WithFailThreshold(threshold float64) Option {
-	return func(c *ConnectionsCheck) {
+// WithOpenConnectionsFailThreshold sets the failure threshold as a percentage (0-100) of max connections.
+func WithOpenConnectionsFailThreshold(threshold float64) OpenConnectionsOption {
+	return func(c *OpenConnectionsCheck) {
 		c.failThreshold = threshold
 	}
 }
 
-// New creates a new Database Connections Check instance with optional configuration.
-func New(opts ...Option) *ConnectionsCheck {
-	check := &ConnectionsCheck{
-		name:          "db-connections-check",
+// NewOpenConnections creates a new Database Connections Check instance with optional configuration.
+func NewOpenConnections(opts ...OpenConnectionsOption) *OpenConnectionsCheck {
+	check := &OpenConnectionsCheck{
+		name:          "database:connections",
 		db:            nil,
 		timeout:       defaultTimeout,
-		warnThreshold: defaultWarnThreshold,
-		failThreshold: defaultFailThreshold,
+		warnThreshold: defaultConnectionsWarnThreshold,
+		failThreshold: defaultConnectionsFailThreshold,
 	}
 
 	for _, opt := range opts {
@@ -86,13 +83,13 @@ func New(opts ...Option) *ConnectionsCheck {
 	return check
 }
 
-// GetName returns the name of the check.
-func (c *ConnectionsCheck) GetName() string {
+// GetName returns the name of the connections check.
+func (c *OpenConnectionsCheck) GetName() string {
 	return c.name
 }
 
 // Run executes the database connections health check and returns the result.
-func (c *ConnectionsCheck) Run(ctx context.Context) checks.Result {
+func (c *OpenConnectionsCheck) Run(ctx context.Context) checks.Result {
 	now := time.Now()
 	if c.db == nil {
 		return checks.Result{
@@ -111,7 +108,7 @@ func (c *ConnectionsCheck) Run(ctx context.Context) checks.Result {
 	case <-checkCtx.Done():
 		return checks.Result{
 			Status: checks.StatusFail,
-			Output: "connections check timeout",
+			Output: "operation timed out",
 			Time:   now,
 		}
 	default:
@@ -129,9 +126,9 @@ func (c *ConnectionsCheck) Run(ctx context.Context) checks.Result {
 		}
 	}
 
-	// Calculate actual threshold values
-	failThresholdConnections := int(float64(maxConnections) * c.failThreshold)
-	warnThresholdConnections := int(float64(maxConnections) * c.warnThreshold)
+	// Calculate actual threshold values - convert percentage to ratio
+	failThresholdConnections := int(float64(maxConnections) * c.failThreshold / 100.0)
+	warnThresholdConnections := int(float64(maxConnections) * c.warnThreshold / 100.0)
 
 	// Check if open connections exceed the failure threshold
 	if openConnections >= failThresholdConnections {
@@ -155,7 +152,6 @@ func (c *ConnectionsCheck) Run(ctx context.Context) checks.Result {
 
 	return checks.Result{
 		Status:        checks.StatusPass,
-		Output:        fmt.Sprintf("open connections: %d/%d", openConnections, maxConnections),
 		Time:          now,
 		ObservedValue: openConnections,
 	}

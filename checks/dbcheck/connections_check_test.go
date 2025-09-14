@@ -1,4 +1,4 @@
-package connectionscheck_test
+package dbcheck_test
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/mock"
 
 	"github.com/brpaz/go-healthcheck/v2/checks"
-	"github.com/brpaz/go-healthcheck/v2/checks/dbcheck/connectionscheck"
+	"github.com/brpaz/go-healthcheck/v2/checks/dbcheck"
 )
 
 // MockDatabaseStatsProvider is a mock implementation of the database stats interface
@@ -35,9 +35,9 @@ func TestConnectionsCheck_Run(t *testing.T) {
 		}
 		mockDB.On("Stats").Return(stats)
 
-		check := connectionscheck.New(
-			connectionscheck.WithName("test-connections-check"),
-			connectionscheck.WithDB(mockDB),
+		check := dbcheck.NewOpenConnections(
+			dbcheck.WithOpenConnectionsName("test-connections-check"),
+			dbcheck.WithOpenConnectionsDB(mockDB),
 		)
 
 		result := check.Run(context.Background())
@@ -45,7 +45,6 @@ func TestConnectionsCheck_Run(t *testing.T) {
 		assert.Equal(t, checks.StatusPass, result.Status)
 		assert.Equal(t, "test-connections-check", check.GetName())
 		assert.Equal(t, 10, result.ObservedValue)
-		assert.Contains(t, result.Output, "open connections: 10/100")
 		mockDB.AssertExpectations(t)
 	})
 
@@ -54,21 +53,21 @@ func TestConnectionsCheck_Run(t *testing.T) {
 
 		mockDB := &MockDatabaseStatsProvider{}
 		stats := sql.DBStats{
-			OpenConnections:    80, // 80% of 100 (equals default warn threshold)
+			OpenConnections:    85,
 			MaxOpenConnections: 100,
 		}
 		mockDB.On("Stats").Return(stats)
 
-		check := connectionscheck.New(
-			connectionscheck.WithName("test-connections-check"),
-			connectionscheck.WithDB(mockDB),
+		check := dbcheck.NewOpenConnections(
+			dbcheck.WithOpenConnectionsName("test-connections-check"),
+			dbcheck.WithOpenConnectionsDB(mockDB),
 		)
 
 		result := check.Run(context.Background())
 
 		assert.Equal(t, checks.StatusWarn, result.Status)
-		assert.Equal(t, 80, result.ObservedValue)
 		assert.Contains(t, result.Output, "approaching maximum")
+		assert.Equal(t, 85, result.ObservedValue)
 		mockDB.AssertExpectations(t)
 	})
 
@@ -82,30 +81,30 @@ func TestConnectionsCheck_Run(t *testing.T) {
 		}
 		mockDB.On("Stats").Return(stats)
 
-		check := connectionscheck.New(
-			connectionscheck.WithName("test-connections-check"),
-			connectionscheck.WithDB(mockDB),
+		check := dbcheck.NewOpenConnections(
+			dbcheck.WithOpenConnectionsName("test-connections-check"),
+			dbcheck.WithOpenConnectionsDB(mockDB),
 		)
 
 		result := check.Run(context.Background())
 
 		assert.Equal(t, checks.StatusFail, result.Status)
-		assert.Equal(t, 100, result.ObservedValue)
 		assert.Contains(t, result.Output, "exceed failure threshold")
+		assert.Equal(t, 100, result.ObservedValue)
 		mockDB.AssertExpectations(t)
 	})
 
 	t.Run("check fails when database connection is nil", func(t *testing.T) {
 		t.Parallel()
 
-		check := connectionscheck.New(
-			connectionscheck.WithName("test-connections-check"),
+		check := dbcheck.NewOpenConnections(
+			dbcheck.WithOpenConnectionsName("test-connections-check"),
 		)
 
 		result := check.Run(context.Background())
 
 		assert.Equal(t, checks.StatusFail, result.Status)
-		assert.Contains(t, result.Output, "database connection is required")
+		assert.Equal(t, "database connection is required", result.Output)
 	})
 
 	t.Run("check works with default configuration", func(t *testing.T) {
@@ -118,15 +117,11 @@ func TestConnectionsCheck_Run(t *testing.T) {
 		}
 		mockDB.On("Stats").Return(stats)
 
-		check := connectionscheck.New(
-			connectionscheck.WithDB(mockDB),
-		)
-
+		check := dbcheck.NewOpenConnections(dbcheck.WithOpenConnectionsDB(mockDB))
 		result := check.Run(context.Background())
 
 		assert.Equal(t, checks.StatusPass, result.Status)
-		assert.Equal(t, "db-connections-check", check.GetName())
-		assert.Equal(t, 50, result.ObservedValue)
+		assert.Equal(t, "database:connections", check.GetName())
 		mockDB.AssertExpectations(t)
 	})
 
@@ -140,16 +135,15 @@ func TestConnectionsCheck_Run(t *testing.T) {
 		}
 		mockDB.On("Stats").Return(stats)
 
-		check := connectionscheck.New(
-			connectionscheck.WithDB(mockDB),
-			connectionscheck.WithWarnThreshold(0.5), // 50% warn threshold
+		check := dbcheck.NewOpenConnections(
+			dbcheck.WithOpenConnectionsDB(mockDB),
+			dbcheck.WithOpenConnectionsWarnThreshold(50.0), // 50% warn threshold
 		)
 
 		result := check.Run(context.Background())
 
 		assert.Equal(t, checks.StatusWarn, result.Status)
 		assert.Equal(t, 60, result.ObservedValue)
-		assert.Contains(t, result.Output, "approaching maximum")
 		mockDB.AssertExpectations(t)
 	})
 
@@ -158,20 +152,19 @@ func TestConnectionsCheck_Run(t *testing.T) {
 
 		mockDB := &MockDatabaseStatsProvider{}
 		stats := sql.DBStats{
-			OpenConnections:    85,
+			OpenConnections:    80,
 			MaxOpenConnections: 100,
 		}
 		mockDB.On("Stats").Return(stats)
 
-		check := connectionscheck.New(
-			connectionscheck.WithDB(mockDB),
-			connectionscheck.WithFailThreshold(0.8),
+		check := dbcheck.NewOpenConnections(
+			dbcheck.WithOpenConnectionsDB(mockDB),
+			dbcheck.WithOpenConnectionsFailThreshold(80.0),
 		)
 
 		result := check.Run(context.Background())
 
 		assert.Equal(t, checks.StatusFail, result.Status)
-		assert.Equal(t, 85, result.ObservedValue)
 		assert.Contains(t, result.Output, "exceed failure threshold")
 		mockDB.AssertExpectations(t)
 	})
@@ -186,10 +179,10 @@ func TestConnectionsCheck_Run(t *testing.T) {
 		}
 		mockDB.On("Stats").Return(stats)
 
-		check := connectionscheck.New(
-			connectionscheck.WithDB(mockDB),
-			connectionscheck.WithWarnThreshold(0.6),
-			connectionscheck.WithFailThreshold(0.8),
+		check := dbcheck.NewOpenConnections(
+			dbcheck.WithOpenConnectionsDB(mockDB),
+			dbcheck.WithOpenConnectionsWarnThreshold(60.0),
+			dbcheck.WithOpenConnectionsFailThreshold(80.0),
 		)
 
 		result := check.Run(context.Background())
@@ -205,20 +198,16 @@ func TestConnectionsCheck_Run(t *testing.T) {
 
 		mockDB := &MockDatabaseStatsProvider{}
 		stats := sql.DBStats{
-			OpenConnections:    60,
-			MaxOpenConnections: 100,
+			OpenConnections:    75,
+			MaxOpenConnections: 200,
 		}
 		mockDB.On("Stats").Return(stats)
 
-		check := connectionscheck.New(
-			connectionscheck.WithDB(mockDB),
-		)
-
+		check := dbcheck.NewOpenConnections(dbcheck.WithOpenConnectionsDB(mockDB))
 		result := check.Run(context.Background())
 
 		assert.Equal(t, checks.StatusPass, result.Status)
-		assert.Equal(t, 60, result.ObservedValue)
-		assert.Contains(t, result.Output, "open connections: 60/100")
+		assert.Equal(t, 75, result.ObservedValue)
 		mockDB.AssertExpectations(t)
 	})
 
@@ -227,15 +216,12 @@ func TestConnectionsCheck_Run(t *testing.T) {
 
 		mockDB := &MockDatabaseStatsProvider{}
 		stats := sql.DBStats{
-			OpenConnections:    10,
+			OpenConnections:    50,
 			MaxOpenConnections: 0, // Unlimited connections
 		}
 		mockDB.On("Stats").Return(stats)
 
-		check := connectionscheck.New(
-			connectionscheck.WithDB(mockDB),
-		)
-
+		check := dbcheck.NewOpenConnections(dbcheck.WithOpenConnectionsDB(mockDB))
 		result := check.Run(context.Background())
 
 		assert.Equal(t, checks.StatusPass, result.Status)

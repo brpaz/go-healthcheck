@@ -67,7 +67,7 @@ func New(opts ...Option) *Check {
 		name:           "http-check",
 		url:            "",
 		timeout:        defaultTimeout,
-		exceptedStatus: nil, // Use default behavior (< 400)
+		exceptedStatus: nil,
 		client:         http.DefaultClient,
 	}
 
@@ -85,7 +85,6 @@ func (c *Check) GetName() string {
 
 // Run executes the HTTP health check and returns the result.
 func (c *Check) Run(ctx context.Context) checks.Result {
-	// Validate configuration
 	if c.url == "" {
 		return checks.Result{
 			Status: checks.StatusFail,
@@ -99,7 +98,6 @@ func (c *Check) Run(ctx context.Context) checks.Result {
 		Time:   time.Now(),
 	}
 
-	// Create timeout context for the HTTP request
 	requestCtx, cancel := context.WithTimeout(ctx, c.timeout)
 	defer cancel()
 

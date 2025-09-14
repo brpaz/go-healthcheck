@@ -7,8 +7,8 @@ The Memory Check verifies that the system has enough free memory. This is useful
 The Memory Check can be configured using the following options:
 
 - `WithName(name string)`: Sets the name of the check.
-- `WithWarnThreshold(threshold float64)`: Sets the RAM usage percentage threshold to trigger a warning status. Default is 80.0 (80%).
-- `WithFailThreshold(threshold float64)`: Sets the RAM usage percentage threshold to trigger
+- `WithWarnThreshold(threshold float64)`: Sets the RAM usage percentage threshold to trigger a warning status. Default is 80.0 (80%). Values should be between 0.0 and 100.0.
+- `WithFailThreshold(threshold float64)`: Sets the RAM usage percentage threshold to trigger a failure status. Default is 90.0 (90%). Values should be between 0.0 and 100.0.
 
 
 ## Example

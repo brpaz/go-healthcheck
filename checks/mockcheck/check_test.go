@@ -49,7 +49,7 @@ func TestMockCheck_Execute(t *testing.T) {
 		)
 		result := check.Run(context.Background())
 		assert.Equal(t, checks.StatusFail, result.Status)
-		assert.Equal(t, "mock check failed", result.Output)
+		assert.Equal(t, "check failed", result.Output)
 		assert.Equal(t, "fail", check.GetName())
 	})
 }

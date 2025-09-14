@@ -12,7 +12,6 @@ import (
 )
 
 const (
-	Name           = "tcp-check"
 	defaultTimeout = 5 * time.Second
 )
 
@@ -96,7 +95,7 @@ func WithDialer(dialer Dialer) Option {
 // New creates a new TCP/UDP Check instance with optional configuration.
 func New(opts ...Option) *Check {
 	check := &Check{
-		name:    Name,
+		name:    "tcp-check",
 		host:    "",
 		port:    0,
 		network: TCP,

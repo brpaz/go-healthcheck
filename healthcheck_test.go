@@ -151,7 +151,7 @@ func TestHealthCheck_Execute(t *testing.T) {
 
 		assert.Equal(t, checks.StatusFail, failedCheckResult[0].Status)
 		assert.Equal(t, checks.StatusPass, successCheckResult[0].Status)
-		assert.Equal(t, failedCheckResult[0].Output, "mock check failed")
+		assert.Equal(t, failedCheckResult[0].Output, "check failed")
 	})
 
 	t.Run("Warns With One Warning Check", func(t *testing.T) {
