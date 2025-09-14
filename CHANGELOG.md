@@ -1,5 +1,14 @@
 # Changelog
 
+## v2.2.1 - 2025-09-14
+
+### What's Changed
+
+#### 🐛 Bug Fixes
+
+- fix: inconcistent constructor naming on database checks @brpaz (#13)
+  **Full Changelog**: [https://github.com/brpaz/go-healthcheck/compare/v2.2.0...v2.2.1](https://github.com/brpaz/go-healthcheck/compare/v2.2.0...v2.2.1)
+
 ## v2.2.0 - 2025-09-14
 
 ### What's Changed
