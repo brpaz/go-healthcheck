@@ -12,8 +12,6 @@ The TCP Check can be configured using the following options:
 - `WithNetwork(network string)`: Sets the network type (e.g., "tcp", "tcp4", "tcp6"). Default is "tcp".
 - `WithDiale(r(dialer *net.Dialer)`: Sets a custom net.Dialer to be used for the connection.
 - `WithTimeout(timeout time.Duration)`: Sets the timeout for the TCP connection (default is 2 seconds).
-- `WithComponentType(componentType string)`: Sets the component type of the check (default is "tcp").
-- `WithComponentID(componentID string)`: Sets a unique identifier for the component being checked.
 
 ## Example
 
@@ -27,7 +25,7 @@ import (
 
 func main() {
     check := tcpcheck.New(
-        tcpcheck.WithName("My TCP Check"),
+        tcpcheck.WithName("tcp:my-service"),
         tcpcheck.WithHost("localhost"),
         tcpcheck.WithPort(8080),
         tcpcheck.WithTimeout(5 * time.Second),

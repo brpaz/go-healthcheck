@@ -21,8 +21,6 @@ type Result struct {
 	Time          time.Time `json:"time"`
 	ObservedValue any       `json:"observed_value,omitempty"`
 	ObservedUnit  string    `json:"observed_unit,omitempty"`
-	ComponentID   string    `json:"component_id,omitempty"`
-	ComponentType string    `json:"component_type,omitempty"`
 }
 
 // Check is an interface that any health check implementation must satisfy.

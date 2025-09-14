@@ -37,7 +37,7 @@ func TestRedisCheck_New(t *testing.T) {
 		check := redischeck.New()
 
 		assert.NotNil(t, check)
-		assert.Equal(t, "redis-check", check.GetName())
+		assert.Equal(t, "redis", check.GetName())
 	})
 
 	t.Run("creates check with custom options", func(t *testing.T) {
@@ -50,8 +50,6 @@ func TestRedisCheck_New(t *testing.T) {
 			redischeck.WithName("custom-redis-check"),
 			redischeck.WithClient(mockClient),
 			redischeck.WithTimeout(customTimeout),
-			redischeck.WithComponentType("cache"),
-			redischeck.WithComponentID("redis-primary"),
 		)
 
 		assert.NotNil(t, check)
@@ -63,7 +61,7 @@ func TestRedisCheck_GetName(t *testing.T) {
 	t.Parallel()
 
 	check := redischeck.New()
-	assert.Equal(t, "redis-check", check.GetName())
+	assert.Equal(t, "redis", check.GetName())
 }
 
 func TestRedisCheck_Run(t *testing.T) {
@@ -77,8 +75,6 @@ func TestRedisCheck_Run(t *testing.T) {
 
 		assert.Equal(t, checks.StatusFail, result.Status)
 		assert.Equal(t, "Redis client is required", result.Output)
-		assert.Equal(t, "datastore", result.ComponentType)
-		assert.Equal(t, "redis", result.ComponentID)
 	})
 
 	t.Run("succeeds when ping succeeds", func(t *testing.T) {
@@ -91,8 +87,6 @@ func TestRedisCheck_Run(t *testing.T) {
 		result := check.Run(context.Background())
 
 		assert.Equal(t, checks.StatusPass, result.Status)
-		assert.Equal(t, "datastore", result.ComponentType)
-		assert.Equal(t, "redis", result.ComponentID)
 		assert.Equal(t, "ms", result.ObservedUnit)
 		assert.GreaterOrEqual(t, result.ObservedValue, int64(0))
 

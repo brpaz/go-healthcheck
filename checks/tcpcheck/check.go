@@ -26,14 +26,12 @@ const (
 
 // Check represents a TCP/UDP port health check that verifies connectivity.
 type Check struct {
-	name          string
-	host          string
-	port          int
-	network       NetworkType
-	timeout       time.Duration
-	componentType string
-	componentID   string
-	dialer        Dialer
+	name    string
+	host    string
+	port    int
+	network NetworkType
+	timeout time.Duration
+	dialer  Dialer
 }
 
 // Dialer interface allows for custom dialers (useful for testing)
@@ -88,20 +86,6 @@ func WithTimeout(timeout time.Duration) Option {
 	}
 }
 
-// WithComponentType sets the component type for the check.
-func WithComponentType(componentType string) Option {
-	return func(c *Check) {
-		c.componentType = componentType
-	}
-}
-
-// WithComponentID sets the component ID for the check.
-func WithComponentID(componentID string) Option {
-	return func(c *Check) {
-		c.componentID = componentID
-	}
-}
-
 // WithDialer sets a custom dialer for the connection.
 func WithDialer(dialer Dialer) Option {
 	return func(c *Check) {
@@ -112,14 +96,12 @@ func WithDialer(dialer Dialer) Option {
 // New creates a new TCP/UDP Check instance with optional configuration.
 func New(opts ...Option) *Check {
 	check := &Check{
-		name:          Name,
-		host:          "",
-		port:          0,
-		network:       TCP,
-		timeout:       defaultTimeout,
-		componentType: "network",
-		componentID:   "",
-		dialer:        &DefaultDialer{&net.Dialer{}},
+		name:    Name,
+		host:    "",
+		port:    0,
+		network: TCP,
+		timeout: defaultTimeout,
+		dialer:  &DefaultDialer{&net.Dialer{}},
 	}
 
 	for _, opt := range opts {
@@ -137,10 +119,8 @@ func (c *Check) GetName() string {
 // Run executes the TCP/UDP health check and returns the result.
 func (c *Check) Run(ctx context.Context) checks.Result {
 	result := checks.Result{
-		Status:        checks.StatusPass,
-		Time:          time.Now(),
-		ComponentType: c.componentType,
-		ComponentID:   c.componentID,
+		Status: checks.StatusPass,
+		Time:   time.Now(),
 	}
 
 	// Validate configuration

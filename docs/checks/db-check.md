@@ -1,10 +1,10 @@
-## SQL Check
+## DB Check
 
-The SQL Check verifies that a SQL database is reachable. This is useful for monitoring the availability of SQL databases such as MySQL, PostgreSQL, SQLite, and others.
+The DB Check verifies that a SQL database is reachable. This is useful for monitoring the availability of SQL databases such as MySQL, PostgreSQL, SQLite, and others.
 
 ## Configuration
 
-The SQL Check can be configured using the following options:
+The DB Check can be configured using the following options:
 
 - `WithName(name string)`: Sets the name of the check.
 - `WithDB(db *sql.DB)`: Sets the database connection to be used for the check.
@@ -35,7 +35,7 @@ import (
     "database/sql"
     "time"
     "github.com/brpaz/go-healthcheck"
-    "github.com/brpaz/go-healthcheck/checks/sqlcheck"
+    "github.com/brpaz/go-healthcheck/checks/dbcheck"
     _ "github.com/go-sql-driver/mysql" // Import the MySQL driver
 )
 
@@ -48,16 +48,16 @@ func main() {
     defer db.Close()
 
     // Create a basic health check
-    basicCheck := sqlcheck.New(
-        sqlcheck.WithDB(db),
-        sqlcheck.WithTimeout(2 * time.Second),
+    basicCheck := dbcheck.New(
+        dbcheck.WithDB(db),
+        dbcheck.WithTimeout(2 * time.Second),
     )
 
     // Create a health check with metrics enabled
-    metricsCheck := sqlcheck.New(
-        sqlcheck.WithDB(db),
-        sqlcheck.WithTimeout(2 * time.Second),
-        sqlcheck.WithMetrics(true), // Enable connection pool metrics
+    metricsCheck := dbcheck.New(
+        dbcheck.WithDB(db),
+        dbcheck.WithTimeout(2 * time.Second),
+        dbcheck.WithMetrics(true), // Enable connection pool metrics
     )
 
     // Use the checks...
@@ -69,7 +69,6 @@ func main() {
 **Basic check output (1 result):**
 ```json
 {
-  "componentId": "sql-check",
   "status": "pass",
   "output": "",
   "observedValue": 1,
@@ -81,49 +80,42 @@ func main() {
 ```json
 [
   {
-    "componentId": "sql-check",
     "status": "pass",
     "output": "",
     "observedValue": 1,
     "observedUnit": "ms"
   },
   {
-    "componentId": "sql-check:open-connections",
     "status": "pass",
     "output": "",
     "observedValue": 5,
     "observedUnit": ""
   },
   {
-    "componentId": "sql-check:in-use-connections",
     "status": "pass",
     "output": "",
     "observedValue": 2,
     "observedUnit": ""
   },
   {
-    "componentId": "sql-check:idle-connections",
     "status": "pass",
     "output": "",
     "observedValue": 3,
     "observedUnit": ""
   },
   {
-    "componentId": "sql-check:max-open-connections",
     "status": "pass",
     "output": "",
     "observedValue": 25,
     "observedUnit": ""
   },
   {
-    "componentId": "sql-check:wait-count",
     "status": "pass",
     "output": "",
     "observedValue": 10,
     "observedUnit": ""
   },
   {
-    "componentId": "sql-check:wait-duration",
     "status": "pass",
     "output": "",
     "observedValue": 15,

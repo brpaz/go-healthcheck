@@ -3,6 +3,7 @@ package memorycheck
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/brpaz/go-healthcheck/checks"
@@ -12,9 +13,20 @@ const (
 	Name = "memory-check"
 )
 
-// Check represents a simplified memory health check for backward compatibility.
+// MemoryStats represents memory statistics
+type MemoryStats struct {
+	Total     uint64
+	Available uint64
+	Used      uint64
+	UsedPct   float64
+}
+
+// Check represents a memory health check that monitors system memory usage.
 type Check struct {
-	name string
+	name          string
+	warnThreshold float64 // Percentage of memory usage that triggers warning
+	failThreshold float64 // Percentage of memory usage that triggers failure
+	reader        MemoryReader
 }
 
 // Option is a functional option for configuring Check.
@@ -27,59 +39,34 @@ func WithName(name string) Option {
 	}
 }
 
-// WithRAMWarnThreshold is a placeholder for backward compatibility.
-func WithRAMWarnThreshold(threshold float64) Option {
+// WithWarnThreshold sets the memory usage percentage threshold to trigger a warning status.
+func WithWarnThreshold(threshold float64) Option {
 	return func(c *Check) {
-		// placeholder for backward compatibility
+		c.warnThreshold = threshold
 	}
 }
 
-// WithRAMFailThreshold is a placeholder for backward compatibility.
-func WithRAMFailThreshold(threshold float64) Option {
+// WithFailThreshold sets the memory usage percentage threshold to trigger a failure status.
+func WithFailThreshold(threshold float64) Option {
 	return func(c *Check) {
-		// placeholder for backward compatibility
+		c.failThreshold = threshold
 	}
 }
 
-// WithSwapWarnThreshold is a placeholder for backward compatibility.
-func WithSwapWarnThreshold(threshold float64) Option {
+// WithMemoryReader sets a custom memory reader (useful for testing).
+func WithMemoryReader(reader MemoryReader) Option {
 	return func(c *Check) {
-		// placeholder for backward compatibility
-	}
-}
-
-// WithSwapFailThreshold is a placeholder for backward compatibility.
-func WithSwapFailThreshold(threshold float64) Option {
-	return func(c *Check) {
-		// placeholder for backward compatibility
-	}
-}
-
-// WithComponentType is a placeholder for backward compatibility.
-func WithComponentType(componentType string) Option {
-	return func(c *Check) {
-		// placeholder for backward compatibility
-	}
-}
-
-// WithComponentID is a placeholder for backward compatibility.
-func WithComponentID(componentID string) Option {
-	return func(c *Check) {
-		// placeholder for backward compatibility
-	}
-}
-
-// WithCheckSwap is a placeholder for backward compatibility.
-func WithCheckSwap(checkSwap bool) Option {
-	return func(c *Check) {
-		// placeholder for backward compatibility
+		c.reader = reader
 	}
 }
 
 // New creates a new Memory Check instance with optional configuration.
 func New(opts ...Option) *Check {
 	check := &Check{
-		name: Name,
+		name:          Name,
+		warnThreshold: 80.0,
+		failThreshold: 90.0,
+		reader:        &DefaultMemoryReader{},
 	}
 
 	for _, opt := range opts {
@@ -94,13 +81,42 @@ func (c *Check) GetName() string {
 	return c.name
 }
 
-// Run executes the memory health check and returns a simple result.
+// Run executes the memory health check and returns the result.
 func (c *Check) Run(ctx context.Context) checks.Result {
-	return checks.Result{
-		Status:        checks.StatusPass,
-		Output:        "memory check placeholder",
-		Time:          time.Now(),
-		ComponentType: "system",
-		ComponentID:   "memory:ram",
+	result := checks.Result{
+		Status: checks.StatusPass,
+		Time:   time.Now(),
 	}
+
+	// Read memory statistics
+	memStats, err := c.reader.ReadMemoryStats()
+	if err != nil {
+		result.Status = checks.StatusFail
+		result.Output = fmt.Sprintf("failed to read memory stats: %v", err)
+		return result
+	}
+
+	result.ObservedValue = memStats.UsedPct
+	result.ObservedUnit = "%"
+
+	// Check thresholds
+	if memStats.UsedPct >= c.failThreshold {
+		result.Status = checks.StatusFail
+		result.Output = fmt.Sprintf("memory usage critical: %.1f%% used (threshold: %.1f%%)",
+			memStats.UsedPct, c.failThreshold)
+	} else if memStats.UsedPct >= c.warnThreshold {
+		result.Status = checks.StatusWarn
+		result.Output = fmt.Sprintf("memory usage high: %.1f%% used (threshold: %.1f%%)",
+			memStats.UsedPct, c.warnThreshold)
+	} else {
+		result.Status = checks.StatusPass
+		result.Output = fmt.Sprintf("memory usage normal: %.1f%% used", memStats.UsedPct)
+	}
+
+	return result
+}
+
+// GetMemoryInfo returns current memory statistics
+func (c *Check) GetMemoryInfo() (*MemoryStats, error) {
+	return c.reader.ReadMemoryStats()
 }

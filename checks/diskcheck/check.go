@@ -5,7 +5,6 @@ package diskcheck
 import (
 	"context"
 	"fmt"
-	"syscall"
 	"time"
 
 	"github.com/brpaz/go-healthcheck/checks"
@@ -25,48 +24,12 @@ type DiskInfo struct {
 	AvailPct float64
 }
 
-// FileSystemStater defines the interface for getting filesystem statistics
-type FileSystemStater interface {
-	Statfs(path string) (*DiskInfo, error)
-}
-
-// DefaultFileSystemStater implements FileSystemStater using syscall.Statfs
-type DefaultFileSystemStater struct{}
-
-func (d *DefaultFileSystemStater) Statfs(path string) (*DiskInfo, error) {
-	var stat syscall.Statfs_t
-	if err := syscall.Statfs(path, &stat); err != nil {
-		return nil, fmt.Errorf("failed to get filesystem stats for %s: %w", path, err)
-	}
-
-	total := stat.Blocks * uint64(stat.Bsize)
-	free := stat.Bavail * uint64(stat.Bsize)
-	used := total - (stat.Bfree * uint64(stat.Bsize))
-
-	var usedPct, availPct float64
-	if total > 0 {
-		usedPct = float64(used) / float64(total) * 100
-		availPct = float64(free) / float64(total) * 100
-	}
-
-	return &DiskInfo{
-		Path:     path,
-		Total:    total,
-		Free:     free,
-		Used:     used,
-		UsedPct:  usedPct,
-		AvailPct: availPct,
-	}, nil
-}
-
 // Check represents a disk space health check that monitors disk usage.
 type Check struct {
 	name          string
 	path          string
 	warnThreshold float64 // Percentage of disk usage that triggers warning
 	failThreshold float64 // Percentage of disk usage that triggers failure
-	componentType string
-	componentID   string
 	stater        FileSystemStater
 }
 
@@ -101,20 +64,6 @@ func WithFailThreshold(threshold float64) Option {
 	}
 }
 
-// WithComponentType sets the component type for the check.
-func WithComponentType(componentType string) Option {
-	return func(c *Check) {
-		c.componentType = componentType
-	}
-}
-
-// WithComponentID sets the component ID for the check.
-func WithComponentID(componentID string) Option {
-	return func(c *Check) {
-		c.componentID = componentID
-	}
-}
-
 // WithFileSystemStater sets a custom filesystem stater (useful for testing).
 func WithFileSystemStater(stater FileSystemStater) Option {
 	return func(c *Check) {
@@ -129,8 +78,6 @@ func New(opts ...Option) *Check {
 		path:          "/",
 		warnThreshold: 80.0,
 		failThreshold: 90.0,
-		componentType: "system",
-		componentID:   "disk",
 		stater:        &DefaultFileSystemStater{},
 	}
 
@@ -151,9 +98,8 @@ func (c *Check) GetName() string {
 // TODO: Split into separate checks per path.
 func (c *Check) Run(ctx context.Context) checks.Result {
 	result := checks.Result{
-		Status:        checks.StatusPass,
-		Time:          time.Now(),
-		ComponentType: c.componentType,
+		Status: checks.StatusPass,
+		Time:   time.Now(),
 	}
 
 	diskInfo, err := c.stater.Statfs(c.path)
@@ -163,6 +109,7 @@ func (c *Check) Run(ctx context.Context) checks.Result {
 		return result
 	}
 
+	result.Status = checks.StatusPass
 	result.ObservedValue = diskInfo.UsedPct
 	result.ObservedUnit = "%"
 
@@ -175,10 +122,7 @@ func (c *Check) Run(ctx context.Context) checks.Result {
 		result.Status = checks.StatusWarn
 		result.Output = fmt.Sprintf("disk usage high: %.1f%% used (threshold: %.1f%%)",
 			diskInfo.UsedPct, c.warnThreshold)
-	} else {
-		result.Status = checks.StatusPass
 	}
-
 	return result
 }
 

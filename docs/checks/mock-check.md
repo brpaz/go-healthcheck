@@ -22,7 +22,7 @@ import (
 
 func main() {
     check := mockcheck.New(
-        mockcheck.WithName("My Mock Check"),
+        mockcheck.WithName("mock:example"),
         mockcheck.WithStatus("pass"),
     )
 }

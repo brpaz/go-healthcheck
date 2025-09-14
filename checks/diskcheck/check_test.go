@@ -44,8 +44,6 @@ func TestDiskCheck_New(t *testing.T) {
 			diskcheck.WithPath("/var"),
 			diskcheck.WithWarnThreshold(70.0),
 			diskcheck.WithFailThreshold(85.0),
-			diskcheck.WithComponentType("storage"),
-			diskcheck.WithComponentID("disk-ssd"),
 			diskcheck.WithFileSystemStater(mockStater),
 		)
 
@@ -96,9 +94,6 @@ func TestDiskCheck_Run(t *testing.T) {
 		result := check.Run(context.Background())
 
 		assert.Equal(t, checks.StatusPass, result.Status)
-		assert.Contains(t, result.Output, "disk usage normal")
-		assert.Equal(t, "system", result.ComponentType)
-		assert.Equal(t, "disk:/", result.ComponentID)
 		assert.Equal(t, 50.0, result.ObservedValue)
 		assert.Equal(t, "%", result.ObservedUnit)
 
@@ -203,7 +198,6 @@ func TestDiskCheck_Run(t *testing.T) {
 
 		// Should check only the first path now
 		assert.Equal(t, checks.StatusPass, result.Status)
-		assert.Equal(t, "disk:/", result.ComponentID)
 
 		mockStater.AssertExpectations(t)
 	})
@@ -315,7 +309,7 @@ func TestDiskCheck_Run_ThresholdScenarios(t *testing.T) {
 			warnThreshold:    80.0,
 			failThreshold:    90.0,
 			expectedStatus:   checks.StatusPass,
-			expectedContains: "disk usage normal",
+			expectedContains: "",
 		},
 		{
 			name:             "usage exactly at warn threshold",
@@ -344,7 +338,6 @@ func TestDiskCheck_Run_ThresholdScenarios(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 

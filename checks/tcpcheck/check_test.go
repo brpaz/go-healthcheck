@@ -93,8 +93,6 @@ func TestTCPCheck_New(t *testing.T) {
 			tcpcheck.WithPort(8080),
 			tcpcheck.WithNetwork(tcpcheck.TCP),
 			tcpcheck.WithTimeout(customTimeout),
-			tcpcheck.WithComponentType("service"),
-			tcpcheck.WithComponentID("web-server"),
 			tcpcheck.WithDialer(mockDialer),
 		)
 
@@ -150,7 +148,6 @@ func TestTCPCheck_Run(t *testing.T) {
 
 		assert.Equal(t, checks.StatusFail, result.Status)
 		assert.Equal(t, "host is required", result.Output)
-		assert.Equal(t, "network", result.ComponentType)
 	})
 
 	t.Run("fails when port is invalid", func(t *testing.T) {
@@ -197,7 +194,6 @@ func TestTCPCheck_Run(t *testing.T) {
 		result := check.Run(context.Background())
 
 		assert.Equal(t, checks.StatusPass, result.Status)
-		assert.Equal(t, "network", result.ComponentType)
 		assert.Equal(t, "ms", result.ObservedUnit)
 		assert.GreaterOrEqual(t, result.ObservedValue, int64(0))
 
@@ -359,31 +355,5 @@ func TestTCPCheck_Options(t *testing.T) {
 		assert.Equal(t, checks.StatusFail, result.Status)
 
 		mockDialer.AssertExpectations(t)
-	})
-
-	t.Run("WithComponentType and WithComponentID options", func(t *testing.T) {
-		t.Parallel()
-
-		mockDialer := &MockDialer{}
-		mockConn := &MockConn{}
-
-		mockDialer.On("DialContext", mock.Anything, "tcp", "localhost:8080").Return(mockConn, nil)
-		mockConn.On("Close").Return(nil)
-
-		check := tcpcheck.New(
-			tcpcheck.WithHost("localhost"),
-			tcpcheck.WithPort(8080),
-			tcpcheck.WithComponentType("service"),
-			tcpcheck.WithComponentID("web-api"),
-			tcpcheck.WithDialer(mockDialer),
-		)
-
-		result := check.Run(context.Background())
-
-		assert.Equal(t, "service", result.ComponentType)
-		assert.Equal(t, "web-api", result.ComponentID)
-
-		mockDialer.AssertExpectations(t)
-		mockConn.AssertExpectations(t)
 	})
 }

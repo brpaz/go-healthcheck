@@ -11,8 +11,6 @@ The HTTP Check can be configured using the following options:
 - `WithExpectedStatus(status []int)`: Sets a list of expected status codes. If the response status code is not in this list, the check will fail. By default any status code in the range 200-399 is considered healthy.
 - `WithTimeout(timeout time.Duration)`: Sets the timeout for the HTTP request (default is 5 seconds).
 - `WithHTTPClient(client *http.Client)`: Sets a custom HTTP client to be used for the request.
-- `WithComponentType(componentType string)`: Sets the component type of the check (default is "http").
-- `WithComponentID(componentID string)`: Sets a unique identifier for the component being checked.
 
 ## Example
 
@@ -27,7 +25,7 @@ import (
 
 func main() {
     check := httpcheck.New(
-        httpcheck.WithName("Google HTTP Check"),
+        httpcheck.WithName("http:google"),
         httpcheck.WithURL("https://www.google.com"),
         httpcheck.WithExpectedStatus([]int{200,201}),
         httpcheck.WithTimeout(5 * time.Second),

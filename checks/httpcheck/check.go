@@ -16,8 +16,6 @@ const defaultTimeout = 5 * time.Second
 // Check represents an HTTP health check that verifies url availability.
 type Check struct {
 	name           string
-	componentType  string
-	componentID    string
 	url            string
 	timeout        time.Duration
 	exceptedStatus []int
@@ -63,25 +61,10 @@ func WithExpectedStatus(codes ...int) Option {
 	}
 }
 
-// WithComponentType sets the component type for the check.
-func WithComponentType(componentType string) Option {
-	return func(c *Check) {
-		c.componentType = componentType
-	}
-}
-
-func WithComponentID(componentID string) Option {
-	return func(c *Check) {
-		c.componentID = componentID
-	}
-}
-
 // New creates a new HTTP Check instance with optional configuration.
 func New(opts ...Option) *Check {
 	check := &Check{
 		name:           "http-check",
-		componentType:  "http",
-		componentID:    "",
 		url:            "",
 		timeout:        defaultTimeout,
 		exceptedStatus: nil, // Use default behavior (< 400)
@@ -105,19 +88,15 @@ func (c *Check) Run(ctx context.Context) checks.Result {
 	// Validate configuration
 	if c.url == "" {
 		return checks.Result{
-			Status:        checks.StatusFail,
-			Output:        "URL is required for HTTP health check",
-			Time:          time.Now(),
-			ComponentType: c.componentType,
-			ComponentID:   c.componentID,
+			Status: checks.StatusFail,
+			Output: "URL is required for HTTP health check",
+			Time:   time.Now(),
 		}
 	}
 
 	result := checks.Result{
-		Status:        checks.StatusPass,
-		Time:          time.Now(),
-		ComponentType: c.componentType,
-		ComponentID:   c.componentID,
+		Status: checks.StatusPass,
+		Time:   time.Now(),
 	}
 
 	// Create timeout context for the HTTP request

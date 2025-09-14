@@ -39,15 +39,11 @@ func TestHTTPCheck_Run(t *testing.T) {
 			httpcheck.WithName("test-check"),
 			httpcheck.WithURL(server.URL),
 			httpcheck.WithTimeout(1*time.Second),
-			httpcheck.WithComponentID("test-component"),
-			httpcheck.WithComponentType("http"),
 		)
 
 		result := check.Run(context.Background())
 
 		assert.Equal(t, checks.StatusPass, result.Status)
-		assert.Equal(t, "test-component", result.ComponentID)
-		assert.Equal(t, "http", result.ComponentType)
 		assert.Equal(t, "ms", result.ObservedUnit)
 		assert.GreaterOrEqual(t, result.ObservedValue, int64(0))
 	})
