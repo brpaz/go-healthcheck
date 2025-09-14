@@ -7,3 +7,7 @@ pre-commit:
     test:
       glob: "*.go"
       run: task test
+
+    update-godoc:
+      glob: "*.go"
+      run: task godoc
