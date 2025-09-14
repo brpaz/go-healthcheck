@@ -30,10 +30,6 @@
   color: "0075ca"
   description: "Documentation improvements"
 
-- name: documentation
-  color: "cfd3d7"
-  description: "Additional documentation-related updates"
-
 - name: dependencies
   color: "0366d6"
   description: "Dependency updates"

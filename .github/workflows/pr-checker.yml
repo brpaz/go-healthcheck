@@ -12,3 +12,12 @@ jobs:
         with:
           task_types: '["feat","fix","docs","test","ci","refactor","perf","chore","revert"]'
           add_label: "false"
+
+  validate-pr-labels:
+    name: Check labels
+    runs-on: ubuntu-latest
+    steps:
+      - uses: docker://agilepathway/pull-request-label-checker:v1.6.65
+        with:
+          one_of: "breaking,feature,enchancement,bug,docs,dependencies,security,ci"
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
