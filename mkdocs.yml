@@ -1,0 +1,25 @@
+site_name: Go Healthcheck
+repo_url: https://github.com/brpaz/go-healthcheck
+theme:
+  name: material
+  palette:
+    primary: cyan
+
+copyright: Copyright © 2025 Bruno Paz
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+plugins:
+  - search
+
+nav:
+  - Introduction: index.md
+  - Getting Started: getting-started.md
+  - Checks:
+      - HTTP Check: checks/http-check.md
+      - TCP Check: checks/tcp-check.md
+      - Memory Check: checks/memory-check.md
+      - Disk Check: checks/disk-check.md
+      - Database Check: checks/database-check.md
+      - Redis Check: checks/redis-check.md

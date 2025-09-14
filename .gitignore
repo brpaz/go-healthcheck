@@ -19,3 +19,10 @@ build
 coverage.txt
 dist
 cover
+
+# Devenv
+.devenv*
+devenv.local.nix
+
+# direnv
+.direnv

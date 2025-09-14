@@ -1,0 +1,29 @@
+name: Sync labels
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/labels.yml
+
+permissions:
+  issues: write
+
+jobs:
+  labels:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          sparse-checkout: .github/labels.yml
+
+      - uses: EndBug/label-sync@v2
+        with:
+          # If you want to use a config file, you can put its path or URL here, multiple files are also allowed (more info in the paragraphs below)
+          config-file: .github/labels.yml
+
+          # If you want to delete any additional label, set this to true
+          delete-other-labels: true
+
+          token: ${{ secrets.GITHUB_TOKEN }}
