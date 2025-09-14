@@ -7,7 +7,7 @@
 
 ![Go version](https://img.shields.io/github/go-mod/go-version/brpaz/go-healthcheck?style=for-the-badge)
 [![Go Report Card](https://goreportcard.com/badge/github.com/brpaz/go-healthcheck/v2?style=for-the-badge)](https://goreportcard.com/report/github.com/brpaz/go-healthcheck/v2)
-[![CI status](https://img.shields.io/github/actions/workflow/status/brpaz/go-healthcheck/ci.yml?style=for-the-badge)](https://github.com/brpaz/go-healthcheck/v2/actions/workflows/ci.yml)
+[![CI status](https://img.shields.io/github/actions/workflow/status/brpaz/go-healthcheck/ci.yml?style=for-the-badge)](https://github.com/brpaz/go-healthcheck/actions/workflows/ci.yml)
 [![Coverage Status](https://img.shields.io/codecov/c/github/brpaz/go-healthcheck?style=for-the-badge)](https://codecov.io/gh/brpaz/go-healthcheck)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 [![Documentation](https://img.shields.io/badge/Documentation-Documentation?style=for-the-badge&logo=mdbook&label=Read&color=%23ccc)](https://brpaz.github.io/go-healthcheck)
@@ -80,7 +80,7 @@ If you find this project helpful and would like to support its development, ther
 ## 🧑‍🦱 Contacts
 
 -  **Email** - [oss@brunopaz.dev](oss@brunopaz.dev)
--  **Source code**: [https://github.com/brpaz/go-healthcheck/v2](https://github.com/brpaz/go-healthcheck/v2)
+-  **Source code**: [https://github.com/brpaz/go-healthcheck](https://github.com/brpaz/go-healthcheck)
 
 ## 🗒️ License
 
