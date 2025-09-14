@@ -20,7 +20,7 @@ var defaultOpts = []healthcheck.Option{
 
 func newHealthTest(opts ...healthcheck.Option) *healthcheck.HealthCheck {
 	options := append(defaultOpts, opts...)
-	return healthcheck.NewHealthCheck(options...)
+	return healthcheck.New(options...)
 }
 
 func TestHealthCheck_New(t *testing.T) {
@@ -29,7 +29,7 @@ func TestHealthCheck_New(t *testing.T) {
 	t.Run("With Default Options", func(t *testing.T) {
 		t.Parallel()
 
-		h := healthcheck.NewHealthCheck()
+		h := healthcheck.New()
 		assert.NotNil(t, h)
 		assert.Empty(t, h.ServiceID)
 		assert.Empty(t, h.Description)
@@ -41,7 +41,7 @@ func TestHealthCheck_New(t *testing.T) {
 	t.Run("With Release Information", func(t *testing.T) {
 		t.Parallel()
 
-		h := healthcheck.NewHealthCheck(
+		h := healthcheck.New(
 			healthcheck.WithServiceID("test-service"),
 			healthcheck.WithDescription("A test service"),
 			healthcheck.WithVersion("v1.0.0"),

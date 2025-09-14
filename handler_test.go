@@ -23,7 +23,7 @@ var (
 
 func newHealthChechkerWithResult(t *testing.T, status checks.Status) *healthcheck.HealthCheck {
 	t.Helper()
-	return healthcheck.NewHealthCheck(
+	return healthcheck.New(
 		healthcheck.WithServiceID(testServiceID),
 		healthcheck.WithReleaseID(testReleaseID),
 		healthcheck.WithVersion(testVersion),

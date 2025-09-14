@@ -17,7 +17,7 @@ func main() {
     mycheck := mockcheck.New(
 		mockcheck.WithName("my-check"),
 	)
-	hc := healthcheck.NewHealthChecker(
+	hc := healthcheck.New(
 		healthcheck.WithServiceID("my-service"),
 		healthcheck.WithDescription("My Service"),
 		healthcheck.WithVersion("1.0.0"),
@@ -35,7 +35,7 @@ func main() {
 - [func HealthHandler\(healthchecker \*HealthCheck\) http.HandlerFunc](<#HealthHandler>)
 - [type CheckRunResult](<#CheckRunResult>)
 - [type HealthCheck](<#HealthCheck>)
-  - [func NewHealthCheck\(opts ...Option\) \*HealthCheck](<#NewHealthCheck>)
+  - [func New\(opts ...Option\) \*HealthCheck](<#New>)
   - [func \(h \*HealthCheck\) AddCheck\(check checks.Check\)](<#HealthCheck.AddCheck>)
   - [func \(h \*HealthCheck\) Execute\(ctx context.Context\) CheckRunResult](<#HealthCheck.Execute>)
   - [func \(h \*HealthCheck\) GetChecks\(\) \[\]checks.Check](<#HealthCheck.GetChecks>)
@@ -85,14 +85,14 @@ type HealthCheck struct {
 }
 ```
 
-<a name="NewHealthCheck"></a>
-### func [NewHealthCheck](<https://github.com/brpaz/go-healthcheck/blob/master/healthcheck.go#L87>)
+<a name="New"></a>
+### func [New](<https://github.com/brpaz/go-healthcheck/blob/master/healthcheck.go#L87>)
 
 ```go
-func NewHealthCheck(opts ...Option) *HealthCheck
+func New(opts ...Option) *HealthCheck
 ```
 
-NewHealthCheck creates a new HealthChecker instance the provided options.
+New creates a new HealthChecker instance the provided options.
 
 <a name="HealthCheck.AddCheck"></a>
 ### func \(\*HealthCheck\) [AddCheck](<https://github.com/brpaz/go-healthcheck/blob/master/healthcheck.go#L100>)
