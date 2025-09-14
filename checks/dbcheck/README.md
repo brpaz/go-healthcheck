@@ -11,7 +11,7 @@ import "github.com/brpaz/go-healthcheck/v2/checks/dbcheck"
 - [type DatabasePinger](<#DatabasePinger>)
 - [type DatabaseStatsProvider](<#DatabaseStatsProvider>)
 - [type OpenConnectionsCheck](<#OpenConnectionsCheck>)
-  - [func NewOpenConnections\(opts ...OpenConnectionsOption\) \*OpenConnectionsCheck](<#NewOpenConnections>)
+  - [func NewOpenConnectionsCheck\(opts ...OpenConnectionsOption\) \*OpenConnectionsCheck](<#NewOpenConnectionsCheck>)
   - [func \(c \*OpenConnectionsCheck\) GetName\(\) string](<#OpenConnectionsCheck.GetName>)
   - [func \(c \*OpenConnectionsCheck\) Run\(ctx context.Context\) checks.Result](<#OpenConnectionsCheck.Run>)
 - [type OpenConnectionsOption](<#OpenConnectionsOption>)
@@ -21,7 +21,7 @@ import "github.com/brpaz/go-healthcheck/v2/checks/dbcheck"
   - [func WithOpenConnectionsTimeout\(timeout time.Duration\) OpenConnectionsOption](<#WithOpenConnectionsTimeout>)
   - [func WithOpenConnectionsWarnThreshold\(threshold float64\) OpenConnectionsOption](<#WithOpenConnectionsWarnThreshold>)
 - [type PingCheck](<#PingCheck>)
-  - [func NewPing\(opts ...PingOption\) \*PingCheck](<#NewPing>)
+  - [func NewPingCheck\(opts ...PingOption\) \*PingCheck](<#NewPingCheck>)
   - [func \(c \*PingCheck\) GetName\(\) string](<#PingCheck.GetName>)
   - [func \(c \*PingCheck\) Run\(ctx context.Context\) checks.Result](<#PingCheck.Run>)
 - [type PingOption](<#PingOption>)
@@ -63,14 +63,14 @@ type OpenConnectionsCheck struct {
 }
 ```
 
-<a name="NewOpenConnections"></a>
-### func [NewOpenConnections](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/connections_check.go#L70>)
+<a name="NewOpenConnectionsCheck"></a>
+### func [NewOpenConnectionsCheck](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/connections_check.go#L70>)
 
 ```go
-func NewOpenConnections(opts ...OpenConnectionsOption) *OpenConnectionsCheck
+func NewOpenConnectionsCheck(opts ...OpenConnectionsOption) *OpenConnectionsCheck
 ```
 
-NewOpenConnections creates a new Database Connections Check instance with optional configuration.
+NewOpenConnectionsCheck creates a new Database Connections Check instance with optional configuration.
 
 <a name="OpenConnectionsCheck.GetName"></a>
 ### func \(\*OpenConnectionsCheck\) [GetName](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/connections_check.go#L87>)
@@ -155,14 +155,14 @@ type PingCheck struct {
 }
 ```
 
-<a name="NewPing"></a>
-### func [NewPing](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/ping_check.go#L50>)
+<a name="NewPingCheck"></a>
+### func [NewPingCheck](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/ping_check.go#L50>)
 
 ```go
-func NewPing(opts ...PingOption) *PingCheck
+func NewPingCheck(opts ...PingOption) *PingCheck
 ```
 
-NewPing creates a new SQL Ping Check instance with optional configuration.
+NewPingCheck creates a new SQL Ping Check instance with optional configuration.
 
 <a name="PingCheck.GetName"></a>
 ### func \(\*PingCheck\) [GetName](<https://github.com/brpaz/go-healthcheck/blob/master/checks/dbcheck/ping_check.go#L65>)
