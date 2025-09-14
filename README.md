@@ -2,6 +2,9 @@
 
 > A Golang library that provides Healthchecks for your Go Application.
 
+
+<div align="center">
+
 ![Go version](https://img.shields.io/github/go-mod/go-version/brpaz/go-healthcheck?style=for-the-badge)
 [![Go Report Card](https://goreportcard.com/badge/github.com/brpaz/go-healthcheck?style=for-the-badge)](https://goreportcard.com/report/github.com/brpaz/go-healthcheck)
 [![CI status](https://img.shields.io/github/actions/workflow/status/brpaz/go-healthcheck/ci.yml?style=for-the-badge)](https://github.com/brpaz/go-healthcheck/actions/workflows/ci.yml)
@@ -9,6 +12,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 [![Documentation](https://img.shields.io/badge/Documentation-Documentation?style=for-the-badge&logo=mdbook&label=Read&color=%23ccc)](https://brpaz.github.io/go-healthcheck)
 
+</div>
 
 ## 🎯 Features
 
