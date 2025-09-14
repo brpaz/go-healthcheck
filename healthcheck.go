@@ -13,7 +13,7 @@
 //	    mycheck := mockcheck.New(
 //			mockcheck.WithName("my-check"),
 //		)
-//		hc := healthcheck.NewHealthChecker(
+//		hc := healthcheck.New(
 //			healthcheck.WithServiceID("my-service"),
 //			healthcheck.WithDescription("My Service"),
 //			healthcheck.WithVersion("1.0.0"),
@@ -83,8 +83,8 @@ func WithCheck(check checks.Check) Option {
 	}
 }
 
-// NewHealthCheck creates a new HealthChecker instance the provided options.
-func NewHealthCheck(opts ...Option) *HealthCheck {
+// New creates a new HealthChecker instance the provided options.
+func New(opts ...Option) *HealthCheck {
 	h := &HealthCheck{
 		Checks: make([]checks.Check, 0),
 	}
