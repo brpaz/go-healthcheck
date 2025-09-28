@@ -6,13 +6,13 @@ The library provides several built-in checks that you can use to monitor the hea
 
 This library provides the following built-in checks:
 
-- [HTTP Check](docs/checks/http-check.md) - Checks that a specific http endpoint is reachable and returns the expected status code.
-- [TCP Check](docs/checks/tcp-check.md) - Checks that a TCP connection can be established to a specific host and port.
-- [Disk Check](docs/checks/disk-check.md) - Checks that a disk has enough free space.
-- [Memory Check](docs/checks/memory-check.md) - Checks that the system has enough free memory.
-- [SQL Check](docs/checks/sql-check.md) - Checks that a database is reachable.
-- [Redis Check](docs/checks/redis-check.md) - Checks that a Redis instance is reachable.
-- [Mock Check](docs/checks/mock-check.md) - A mock check that returns the status passed to it. Useful for testing.
+- [HTTP Check](./http-check.md) - Checks that a specific http endpoint is reachable and returns the expected status code.
+- [TCP Check](./tcp-check.md) - Checks that a TCP connection can be established to a specific host and port.
+- [Disk Check](./disk-check.md) - Checks that a disk has enough free space.
+- [Memory Check](./memory-check.md) - Checks that the system has enough free memory.
+- [Database Check](./database-check.md) - Checks that a database is reachable.
+- [Redis Check](./redis-check.md) - Checks that a Redis instance is reachable.
+- [Mock Check](mock-check.md) - A mock check that returns the status passed to it. Useful for testing.
 
 More checks may be added in the future. Pull requests are welcome!
 

@@ -8,4 +8,4 @@ This library provides several built-in checks. Please refer to the [checks docum
 
 # Usage
 
-See the [Getting Started](docs/getting-started.md) guide for instructions on how to use the library.
+See the [Getting Started](./getting-started.md) guide for instructions on how to use the library.
