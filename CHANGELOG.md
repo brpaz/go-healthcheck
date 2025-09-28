@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.2.2 - 2025-09-28
+
+### What's Changed
+
+#### ⚠️ Maintenance
+
+- ci(docs): wrong branch on actions workflow @brpaz (#15)
+- chore(docs): fixes @brpaz (#14)
+  **Full Changelog**: [https://github.com/brpaz/go-healthcheck/compare/v2.2.1...v2.2.2](https://github.com/brpaz/go-healthcheck/compare/v2.2.1...v2.2.2)
+
 ## v2.2.1 - 2025-09-14
 
 ### What's Changed
