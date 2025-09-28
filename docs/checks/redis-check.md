@@ -29,3 +29,4 @@ func main() {
 		redischeck.WithTimeout(5*time.Second),
 	)
 }
+```
