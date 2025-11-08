@@ -24,7 +24,7 @@ jobs:
         run: go install gotest.tools/gotestsum@latest
 
       - name: Run Linter
-        uses: golangci/golangci-lint-action@v8
+        uses: golangci/golangci-lint-action@v9
 
       - name: Run Tests
         run: |
