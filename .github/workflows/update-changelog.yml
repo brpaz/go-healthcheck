@@ -13,7 +13,7 @@ jobs:
     name: Update Changelog
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Update Changelog
         uses: stefanzweifel/changelog-updater-action@v1
