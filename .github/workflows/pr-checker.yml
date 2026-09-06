@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: PR Conventional Commit Validation
-        uses: ytanikin/pr-conventional-commits@1.5.2
+        uses: ytanikin/pr-conventional-commits@639145d78959c53c43112365837e3abd21ed67c1 # 1.5.2
         with:
           task_types: '["feat","fix","docs","test","ci","refactor","perf","chore","revert"]'
           add_label: "false"
@@ -18,7 +18,7 @@ jobs:
     name: Check PR Labels
     runs-on: ubuntu-latest
     steps:
-      - uses: docker://agilepathway/pull-request-label-checker:v1.6.65
+      - uses: docker://agilepathway/pull-request-label-checker:v1.6.65@sha256:14f5f3dfda922496d07d53494e2d2b42885165f90677a1c03d600059b7706a61
         with:
           one_of: "breaking,feature,enhancement,bug,docs,dependencies,security,ci,maintenance,chore"
           repo_token: ${{ secrets.GITHUB_TOKEN }}
