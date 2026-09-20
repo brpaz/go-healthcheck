@@ -18,7 +18,7 @@ jobs:
     name: Check PR Labels
     runs-on: ubuntu-latest
     steps:
-      - uses: docker://agilepathway/pull-request-label-checker:v1.6.94@sha256:4da77cadb2eb7550b0f029d3969e0970f08259ae9ffacd415cd5a1f925c7f26c
+      - uses: docker://agilepathway/pull-request-label-checker:v1.6.98@sha256:e4a7244ec9455d91ae3e00a27ad23a0d1cf2674d98eae2d2ee150eab3c12b19e
         with:
           one_of: "breaking,feature,enhancement,bug,docs,dependencies,security,ci,maintenance,chore"
           repo_token: ${{ secrets.GITHUB_TOKEN }}
